@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureInitialized } from "@/lib/db-init";
 import { startOfDay, endOfDay, subDays, format, startOfWeek, startOfMonth, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 
 export async function GET(req: NextRequest) {
+  await ensureInitialized();
   try {
     const { searchParams } = req.nextUrl;
     const granularity = searchParams.get("granularity") ?? "daily";

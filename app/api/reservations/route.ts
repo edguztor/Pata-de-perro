@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureInitialized } from "@/lib/db-init";
 
 export async function GET(req: NextRequest) {
+  await ensureInitialized();
   try {
     const { searchParams } = req.nextUrl;
     const search = searchParams.get("search") ?? "";
@@ -39,6 +41,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  await ensureInitialized();
   try {
     const body = await req.json();
     const { guestId, guestName, guestEmail, guestPhone, guestNationality, bedId, checkIn, checkOut, pricePerNight, notes } = body;

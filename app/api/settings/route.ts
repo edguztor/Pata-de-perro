@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureInitialized } from "@/lib/db-init";
 
 export async function GET() {
+  await ensureInitialized();
   try {
     const settings = await prisma.setting.findMany();
     const map = Object.fromEntries(settings.map((s) => [s.key, s.value]));
@@ -13,6 +15,7 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  await ensureInitialized();
   try {
     const body = await req.json();
     const updates = Object.entries(body as Record<string, string>);

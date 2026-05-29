@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureInitialized } from "@/lib/db-init";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await ensureInitialized();
   try {
     const { id } = await params;
     const bed = await prisma.bed.findUnique({
@@ -23,6 +25,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await ensureInitialized();
   try {
     const { id } = await params;
     const body = await req.json();

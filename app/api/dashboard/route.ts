@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureInitialized } from "@/lib/db-init";
 import { startOfDay, endOfDay, subDays, format } from "date-fns";
 
 export async function GET() {
+  await ensureInitialized();
   try {
     const today = new Date();
     const todayStart = startOfDay(today);
