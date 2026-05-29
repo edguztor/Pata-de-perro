@@ -21,8 +21,8 @@ const defaultSettings: Settings = {
   hostel_address: "Centro Histórico, Querétaro, México",
   hostel_phone: "+52 442 000 0000",
   hostel_email: "hola@patadeperro.mx",
-  dorm_price_per_night: "200",
-  private_price_per_night: "650",
+  dorm_price_per_night: "350",
+  private_price_per_night: "850",
 };
 
 export function SettingsClient() {

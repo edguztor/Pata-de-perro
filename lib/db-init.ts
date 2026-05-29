@@ -12,7 +12,6 @@ async function seedDatabase() {
       { key: "dorm_price_per_night", value: "350" },
       { key: "private_price_per_night", value: "850" },
     ],
-    skipDuplicates: true,
   });
 
   const beds = [];

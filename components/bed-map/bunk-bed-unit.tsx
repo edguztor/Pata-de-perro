@@ -1,0 +1,108 @@
+"use client";
+import { cn } from "@/lib/utils";
+
+export interface BedData {
+  id: number;
+  number: number;
+  name: string;
+  type: string;
+  position: string;
+  bunkNumber: number | null;
+  floor: number;
+  room: number;
+  roomName: string;
+  pricePerNight: number;
+  currentStatus: string;
+  currentReservation: {
+    id: number;
+    status: string;
+    checkIn: string;
+    checkOut: string;
+    guest: { name: string; phone?: string };
+  } | null;
+}
+
+const statusConfig = {
+  AVAILABLE: {
+    bg: "bg-emerald-900/40 border-emerald-600/40 hover:bg-emerald-800/50",
+    dot: "bg-emerald-400",
+    text: "text-emerald-300",
+    label: "Disponible",
+  },
+  OCCUPIED: {
+    bg: "bg-rose-900/40 border-rose-600/40 hover:bg-rose-800/50",
+    dot: "bg-rose-400",
+    text: "text-rose-300",
+    label: "Ocupada",
+  },
+  RESERVED: {
+    bg: "bg-amber-900/40 border-amber-600/40 hover:bg-amber-800/50",
+    dot: "bg-amber-400",
+    text: "text-amber-300",
+    label: "Reservada",
+  },
+  MAINTENANCE: {
+    bg: "bg-slate-800/50 border-slate-600/40 hover:bg-slate-700/50",
+    dot: "bg-slate-400",
+    text: "text-slate-400",
+    label: "Mant.",
+  },
+};
+
+interface BunkBedUnitProps {
+  topBed: BedData;
+  bottomBed: BedData;
+  bunkLabel: string;
+  onClick: (bed: BedData) => void;
+}
+
+function BedHalf({
+  bed,
+  isTop,
+  onClick,
+}: {
+  bed: BedData;
+  isTop: boolean;
+  onClick: () => void;
+}) {
+  const cfg = statusConfig[bed.currentStatus as keyof typeof statusConfig] ?? statusConfig.AVAILABLE;
+  const guestName = bed.currentReservation?.guest.name;
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "w-full border px-2.5 py-2 text-left transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#e94560]",
+        isTop ? "rounded-t-xl border-b-0" : "rounded-b-xl",
+        cfg.bg
+      )}
+    >
+      <div className="flex items-center justify-between gap-1 mb-0.5">
+        <span className="text-[10px] font-semibold text-slate-400 leading-none">
+          {isTop ? "↑ Arriba" : "↓ Abajo"}
+        </span>
+        <span className={cn("h-2 w-2 flex-shrink-0 rounded-full", cfg.dot)} />
+      </div>
+      <p className="text-xs font-bold text-white leading-tight truncate">{bed.name}</p>
+      <p className={cn("text-[11px] leading-tight truncate mt-0.5", cfg.text)}>
+        {guestName ? guestName : cfg.label}
+      </p>
+    </button>
+  );
+}
+
+export function BunkBedUnit({ topBed, bottomBed, bunkLabel, onClick }: BunkBedUnitProps) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">{bunkLabel}</p>
+      <div className="w-[140px]">
+        {/* Top bed */}
+        <BedHalf bed={topBed} isTop={true} onClick={() => onClick(topBed)} />
+        {/* Divider representing the bunk frame */}
+        <div className="h-[3px] bg-slate-600/60 border-x border-slate-600/60" />
+        {/* Bottom bed */}
+        <BedHalf bed={bottomBed} isTop={false} onClick={() => onClick(bottomBed)} />
+      </div>
+    </div>
+  );
+}
