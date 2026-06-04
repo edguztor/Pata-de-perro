@@ -61,6 +61,27 @@ export async function POST(req: NextRequest) {
     const bed = await prisma.bed.findUnique({ where: { id: parseInt(bedId) } });
     if (!bed) return NextResponse.json({ error: "Cama no encontrada" }, { status: 404 });
 
+    // Block double-booking: check for overlapping active reservations
+    const overlap = await prisma.reservation.findFirst({
+      where: {
+        bedId: parseInt(bedId),
+        status: { notIn: ["CANCELLED", "CHECKED_OUT"] },
+        checkIn: { lt: checkOutDate },
+        checkOut: { gt: checkInDate },
+      },
+      include: { guest: true },
+    });
+    if (overlap) {
+      return NextResponse.json(
+        {
+          error: "La cama ya está reservada en esas fechas",
+          conflict: true,
+          guest: overlap.guest.name,
+        },
+        { status: 409 }
+      );
+    }
+
     const price = pricePerNight ?? bed.pricePerNight;
 
     const reservation = await prisma.reservation.create({
