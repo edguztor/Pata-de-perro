@@ -1,5 +1,58 @@
 import { prisma } from "./prisma";
 
+const SCHEMA_STATEMENTS = [
+  `CREATE TABLE IF NOT EXISTS "Bed" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "number" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "type" TEXT NOT NULL DEFAULT 'DORM',
+    "position" TEXT NOT NULL DEFAULT 'BOTTOM',
+    "bunkNumber" INTEGER,
+    "floor" INTEGER NOT NULL,
+    "room" INTEGER NOT NULL,
+    "roomName" TEXT NOT NULL,
+    "pricePerNight" REAL NOT NULL DEFAULT 350,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE TABLE IF NOT EXISTS "Guest" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "email" TEXT,
+    "phone" TEXT,
+    "nationality" TEXT,
+    "idNumber" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE TABLE IF NOT EXISTS "Reservation" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "guestId" INTEGER NOT NULL,
+    "bedId" INTEGER NOT NULL,
+    "checkIn" DATETIME NOT NULL,
+    "checkOut" DATETIME NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'RESERVED',
+    "totalAmount" REAL NOT NULL,
+    "pricePerNight" REAL NOT NULL,
+    "notes" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    FOREIGN KEY ("guestId") REFERENCES "Guest" ("id"),
+    FOREIGN KEY ("bedId") REFERENCES "Bed" ("id")
+  )`,
+  `CREATE TABLE IF NOT EXISTS "Setting" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "Setting_key_key" ON "Setting"("key")`,
+];
+
+async function ensureSchema() {
+  for (const stmt of SCHEMA_STATEMENTS) {
+    await prisma.$executeRawUnsafe(stmt);
+  }
+  console.log("[db-init] Schema ensured");
+}
+
 async function seedDatabase() {
   console.log("[db-init] Seeding database...");
 
@@ -55,6 +108,7 @@ let initialized = false;
 
 export async function ensureInitialized() {
   if (initialized) return;
+  await ensureSchema();
   const count = await prisma.bed.count();
   if (count === 0) {
     await seedDatabase();
