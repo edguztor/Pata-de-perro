@@ -14,6 +14,7 @@ type RoomTab = "1" | "2" | "3";
 export function BedMapView() {
   const [beds, setBeds] = useState<BedData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [roomTab, setRoomTab] = useState<RoomTab>("1");
   const [floor, setFloor] = useState<1 | 2>(1);
   // selected bed for detail/check-in/out (reserved or occupied)
@@ -23,9 +24,20 @@ export function BedMapView() {
 
   const fetchBeds = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/beds");
-      if (res.ok) setBeds(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setBeds(data);
+        if (Array.isArray(data) && data.length === 0) {
+          setError("No hay camas en la base de datos. Falta configurar la base de datos (Turso) en Vercel.");
+        }
+      } else {
+        setError("No se pudo conectar con la base de datos. Revisa que las variables DATABASE_URL y DATABASE_AUTH_TOKEN estén configuradas en Vercel.");
+      }
+    } catch {
+      setError("Error de red al cargar las camas. Intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -69,6 +81,17 @@ export function BedMapView() {
       </div>
 
       <BedLegend />
+
+      {/* Error / empty state */}
+      {error && !loading && (
+        <div className="bg-rose-950/40 border border-rose-600/40 rounded-xl p-5 text-sm text-rose-200">
+          <p className="font-semibold mb-1">⚠️ No se pudieron cargar las camas</p>
+          <p className="text-rose-300/90">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchBeds} className="mt-3">
+            <RefreshCw className="h-4 w-4" /> Reintentar
+          </Button>
+        </div>
+      )}
 
       {/* Room tabs */}
       <div className="flex items-center gap-2 flex-wrap">

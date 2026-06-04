@@ -4,8 +4,8 @@ import { ensureInitialized } from "@/lib/db-init";
 import { startOfDay, endOfDay } from "date-fns";
 
 export async function GET() {
-  await ensureInitialized();
   try {
+    await ensureInitialized();
     const today = new Date();
     const beds = await prisma.bed.findMany({
       orderBy: { number: "asc" },
@@ -38,7 +38,10 @@ export async function GET() {
 
     return NextResponse.json(bedsWithStatus);
   } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Error fetching beds" }, { status: 500 });
+    console.error("[api/beds]", e);
+    return NextResponse.json(
+      { error: "Error fetching beds", detail: e instanceof Error ? e.message : String(e) },
+      { status: 500 }
+    );
   }
 }
