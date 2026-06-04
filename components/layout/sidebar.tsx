@@ -40,12 +40,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-stone-200 px-5">
-        <Logo />
+      <div className="relative flex h-24 items-center justify-center border-b border-stone-200 px-5">
+        <Logo className="h-16 w-auto" />
         {/* Close button — only on mobile */}
         <button
           onClick={onClose}
-          className="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+          className="lg:hidden absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
           aria-label="Cerrar menú"
         >
           <X className="h-4 w-4" />
