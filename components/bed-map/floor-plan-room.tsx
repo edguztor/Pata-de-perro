@@ -24,24 +24,33 @@ const STATUS_LABEL: Record<string, string> = {
 function BedSlot({ bed, position, onClick }: { bed: BedData; position: "top" | "bottom"; onClick: () => void }) {
   const s = bed.currentStatus;
   const guest = bed.currentReservation?.guest.name;
+  const isAvailable = s === "AVAILABLE";
   return (
     <button
       onClick={onClick}
       title={`${bed.name} · ${STATUS_LABEL[s] ?? s}${guest ? ` · ${guest}` : ""}`}
       className={cn(
-        "w-full text-left px-2 py-1.5 border transition-all duration-150 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#e94560]/60",
+        "group/bed relative w-full text-left px-2 py-1.5 border transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#e94560]/60 hover:scale-[1.03] hover:z-10 hover:shadow-md",
         position === "top" ? "rounded-t-md border-b-0" : "rounded-b-md",
         STATUS_BG[s] ?? STATUS_BG.AVAILABLE
       )}
     >
-      <div className="flex items-center justify-between mb-0.5">
+      {/* Soft glowing pulse ring on available beds */}
+      {isAvailable && (
+        <span className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-emerald-400/50 animate-glow" />
+      )}
+      <div className="relative flex items-center justify-between mb-0.5">
         <span className="text-[9px] text-stone-500 font-medium leading-none">
           {position === "top" ? "↑ Alta" : "↓ Baja"}
         </span>
-        <span className={cn("h-1.5 w-1.5 rounded-full flex-shrink-0", STATUS_DOT[s] ?? STATUS_DOT.AVAILABLE)} />
+        <span className={cn(
+          "h-1.5 w-1.5 rounded-full flex-shrink-0",
+          STATUS_DOT[s] ?? STATUS_DOT.AVAILABLE,
+          isAvailable && "animate-glow"
+        )} />
       </div>
-      <p className="text-[11px] font-bold text-stone-900 leading-tight truncate">{bed.name}</p>
-      <p className="text-[9px] text-stone-500 leading-tight truncate">
+      <p className="relative text-[11px] font-bold text-stone-900 leading-tight truncate">{bed.name}</p>
+      <p className="relative text-[9px] text-stone-500 leading-tight truncate">
         {guest ?? STATUS_LABEL[s] ?? s}
       </p>
     </button>
@@ -62,7 +71,7 @@ function BunkUnit({
   return (
     <div className="flex flex-col items-center" style={{ width: 128 }}>
       <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-1 text-center">{label}</p>
-      <div className="w-full rounded-md border border-stone-300 overflow-hidden shadow-lg">
+      <div className="w-full rounded-lg border border-stone-300 overflow-hidden shadow-lg ring-1 ring-white/60 bg-white">
         <BedSlot bed={topBed} position="top" onClick={() => onClick(topBed)} />
         {/* bunk frame rail */}
         <div className="h-[3px] bg-stone-300 border-x border-stone-300" />
@@ -136,10 +145,26 @@ export function FloorPlanRoom({ beds, onBedClick }: FloorPlanRoomProps) {
     );
   };
 
+  const available = beds.filter((b) => b.currentStatus === "AVAILABLE").length;
+
   return (
-    <div className="bg-[#f4efe4] border-2 border-stone-300/70 rounded-xl p-5 select-none">
+    <div
+      className="relative border-2 border-stone-300/70 rounded-xl p-5 select-none overflow-hidden"
+      style={{
+        backgroundColor: "#f4efe4",
+        backgroundImage:
+          "linear-gradient(#e3d9c4 1px, transparent 1px), linear-gradient(90deg, #e3d9c4 1px, transparent 1px)",
+        backgroundSize: "26px 26px",
+      }}
+    >
+      {/* Floor occupancy chip */}
+      <div className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-stone-200 px-2.5 py-1 shadow-sm">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-glow" />
+        <span className="text-[10px] font-semibold text-stone-600">{available} libres</span>
+      </div>
+
       {/* Row 1: TL bunk — escalera — TR bunk */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="relative flex items-start justify-between gap-4">
         {renderBunk(0)}
         <StaircaseIcon />
         {renderBunk(1)}
@@ -149,7 +174,7 @@ export function FloorPlanRoom({ beds, onBedClick }: FloorPlanRoomProps) {
       <div className="h-8" />
 
       {/* Row 2: BL bunk — puerta — BR bunk */}
-      <div className="flex items-end justify-between gap-4">
+      <div className="relative flex items-end justify-between gap-4">
         {renderBunk(2)}
         <DoorIcon />
         {renderBunk(3)}
