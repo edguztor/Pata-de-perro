@@ -5,6 +5,7 @@ import { RevenueChart } from "./revenue-chart";
 import { OccupancyChart } from "./occupancy-chart";
 import { RecentActivity } from "./recent-activity";
 import { UpcomingCheckouts } from "./upcoming-checkouts";
+import { OccupancyHero } from "./occupancy-hero";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -61,20 +62,31 @@ export function DashboardClient({ initialData }: { initialData: DashboardData | 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
+          <h1 className="text-2xl font-extrabold text-stone-900 leading-tight" style={{ fontFamily: "Nunito, sans-serif" }}>
             Dashboard
           </h1>
-          <p className="text-stone-500 text-sm mt-0.5">
-            {new Date().toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+          <p className="text-stone-400 text-sm mt-0.5 font-medium">
+            Resumen de operaciones del hostal
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={refresh} disabled={loading}>
-          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
           Actualizar
         </Button>
       </div>
 
-      {/* KPI Cards */}
+      {/* Occupancy hero */}
+      {data?.kpis && (
+        <OccupancyHero
+          checkedIn={data.kpis.checkedIn}
+          reserved={data.kpis.reserved}
+          available={data.kpis.available}
+          totalBeds={data.kpis.totalBeds}
+          occupancyRate={data.kpis.occupancyRate}
+        />
+      )}
+
+      {/* Revenue KPI cards */}
       {data?.kpis && <KpiCards kpis={data.kpis} />}
 
       {/* Charts */}

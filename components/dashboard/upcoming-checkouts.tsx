@@ -20,7 +20,12 @@ export function UpcomingCheckouts({ checkouts }: { checkouts: Checkout[] }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {checkouts.length === 0 && (
-          <p className="text-stone-400 text-sm text-center py-4">No hay check-outs próximos</p>
+          <div className="flex flex-col items-center justify-center py-8 gap-2">
+            <div className="h-10 w-10 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center">
+              <LogOut className="h-4 w-4 text-amber-400" />
+            </div>
+            <p className="text-stone-400 text-sm font-medium">No hay check-outs próximos</p>
+          </div>
         )}
         {checkouts.map((item) => (
           <div key={item.id} className="flex items-center gap-3 py-2 border-b border-stone-200 last:border-0">
