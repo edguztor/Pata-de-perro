@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Hotel, DollarSign, Phone, Mail, MapPin } from "lucide-react";
+import { UserManagement } from "./user-management";
 
 interface Settings {
   hostel_name: string;
@@ -173,6 +174,9 @@ export function SettingsClient() {
           {saving ? "Guardando..." : "Guardar Configuración"}
         </Button>
       </form>
+
+      {/* User & access management (admin only — page is admin-gated by the proxy) */}
+      <UserManagement />
     </div>
   );
 }

@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
   animation: glow-pulse 2.4s ease-in-out infinite;
 }
 
-/* Number shimmer for loading state */
+/* Shimmer for skeleton loading placeholders */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }

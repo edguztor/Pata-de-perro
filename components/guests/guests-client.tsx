@@ -7,7 +7,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { StatusBadge } from "@/components/reservations/status-badge";
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { Plus, Search, Mail, Phone, Globe, Users } from "lucide-react";
+import { Plus, Search, Mail, Phone, Globe } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Guest {
   id: number;
@@ -192,15 +194,31 @@ export function GuestsClient() {
       </div>
 
       {/* Grid */}
-      {loading && <p className="text-stone-400 text-center py-10">Cargando...</p>}
-      {!loading && guests.length === 0 && (
-        <div className="text-center py-16">
-          <Users className="h-12 w-12 text-stone-400 mx-auto mb-3" />
-          <p className="text-stone-500">No hay huéspedes registrados</p>
+      {loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
         </div>
       )}
+      {!loading && guests.length === 0 && (
+        <EmptyState
+          title={search ? "Sin resultados" : "Aún no hay huéspedes"}
+          description={
+            search
+              ? "No encontramos huéspedes con ese nombre."
+              : "Registra a tu primer huésped o se crearán solos al hacer reservaciones."
+          }
+          action={
+            !search ? (
+              <Button onClick={() => setShowForm(true)}>
+                <Plus className="h-4 w-4" />
+                Nuevo Huésped
+              </Button>
+            ) : undefined
+          }
+        />
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {guests.map((g) => (
+        {!loading && guests.map((g) => (
           <button
             key={g.id}
             onClick={() => setSelectedGuest(g)}
