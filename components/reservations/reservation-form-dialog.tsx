@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker";
+import { DatePicker, BlockedRange } from "@/components/ui/date-picker";
 import { getNights, formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
 import { AlertCircle } from "lucide-react";
@@ -57,6 +57,7 @@ export function ReservationFormDialog({
 }) {
   const [form, setForm] = useState<ReservationFormData>({ ...defaultForm(), bedId: initialBedId ?? "" });
   const [beds, setBeds] = useState<BedOption[]>([]);
+  const [blockedRanges, setBlockedRanges] = useState<BlockedRange[]>([]);
   const [loading, setLoading] = useState(false);
   const [conflictMsg, setConflictMsg] = useState<string | null>(null);
 
@@ -74,8 +75,26 @@ export function ReservationFormDialog({
         });
       setForm({ ...defaultForm(), bedId: initialBedId ?? "" });
       setConflictMsg(null);
+      setBlockedRanges([]);
     }
   }, [open, initialBedId]);
+
+  // Fetch blocked dates when bed changes
+  useEffect(() => {
+    if (!form.bedId) { setBlockedRanges([]); return; }
+    fetch(`/api/beds/${form.bedId}/blocked-dates`)
+      .then((r) => r.json())
+      .then((data: { checkIn: string; checkOut: string; guestName: string }[]) => {
+        setBlockedRanges(
+          data.map((r) => ({
+            start: new Date(r.checkIn),
+            end: new Date(new Date(r.checkOut).getTime() - 86400000), // end is exclusive, show day before
+            label: r.guestName,
+          }))
+        );
+      })
+      .catch(() => setBlockedRanges([]));
+  }, [form.bedId]);
 
   const selectedBed = beds.find((b) => b.id === parseInt(form.bedId));
   const nights = form.checkIn && form.checkOut ? getNights(form.checkIn, form.checkOut) : 0;
@@ -102,9 +121,11 @@ export function ReservationFormDialog({
       });
       if (res.status === 409) {
         const data = await res.json();
+        const from = data.checkIn ? format(new Date(data.checkIn), "dd/MM/yyyy") : null;
+        const to = data.checkOut ? format(new Date(data.checkOut), "dd/MM/yyyy") : null;
         setConflictMsg(
           data.guest
-            ? `Esta cama ya tiene una reservación de ${data.guest} en esas fechas. Elige otras fechas o una cama diferente.`
+            ? `Cama ocupada por ${data.guest}${from && to ? ` del ${from} al ${to}` : ""}. Elige otras fechas o una cama diferente.`
             : "Esta cama ya está reservada en esas fechas."
         );
         return;
@@ -197,6 +218,7 @@ export function ReservationFormDialog({
                     }));
                   }}
                   minDate={new Date()}
+                  blockedRanges={blockedRanges}
                   placeholder="Fecha de entrada"
                 />
               </div>
@@ -206,6 +228,7 @@ export function ReservationFormDialog({
                   value={form.checkOut}
                   onChange={(v: string) => { setConflictMsg(null); setForm((f) => ({ ...f, checkOut: v })); }}
                   minDate={minCheckOut}
+                  blockedRanges={blockedRanges}
                   placeholder="Fecha de salida"
                 />
               </div>
