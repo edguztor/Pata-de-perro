@@ -1,88 +1,95 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { BedDouble, Users, TrendingUp, DollarSign, Percent, CalendarCheck } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+"use client";
+import { DollarSign, TrendingUp, CalendarDays } from "lucide-react";
+import { useCountUp } from "@/lib/hooks";
 
 interface KpiProps {
   kpis: {
-    totalBeds: number;
-    checkedIn: number;
-    reserved: number;
-    available: number;
-    occupancyRate: number;
     todayRevenue: number;
     weekRevenue: number;
     monthRevenue: number;
   };
 }
 
-export function KpiCards({ kpis }: KpiProps) {
-  const cards = [
-    {
-      label: "Camas Ocupadas",
-      value: `${kpis.checkedIn} / ${kpis.totalBeds}`,
-      sub: `${kpis.available} disponibles`,
-      icon: BedDouble,
-      color: "text-rose-600",
-      bg: "bg-rose-400/10",
-    },
-    {
-      label: "Reservaciones",
-      value: kpis.reserved.toString(),
-      sub: "por hacer check-in",
-      icon: CalendarCheck,
-      color: "text-amber-600",
-      bg: "bg-amber-400/10",
-    },
-    {
-      label: "Ocupación Hoy",
-      value: `${kpis.occupancyRate}%`,
-      sub: `${kpis.checkedIn} huéspedes activos`,
-      icon: Percent,
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
-    },
-    {
-      label: "Ingresos Hoy",
-      value: formatCurrency(kpis.todayRevenue),
-      sub: "check-ins de hoy",
-      icon: DollarSign,
-      color: "text-emerald-600",
-      bg: "bg-emerald-400/10",
-    },
-    {
-      label: "Ingresos Semana",
-      value: formatCurrency(kpis.weekRevenue),
-      sub: "últimos 7 días",
-      icon: TrendingUp,
-      color: "text-purple-400",
-      bg: "bg-purple-400/10",
-    },
-    {
-      label: "Ingresos Mes",
-      value: formatCurrency(kpis.monthRevenue),
-      sub: "últimos 30 días",
-      icon: Users,
-      color: "text-[#e94560]",
-      bg: "bg-[#e94560]/10",
-    },
-  ];
+interface RevenueCardProps {
+  label: string;
+  sub: string;
+  value: number;
+  icon: React.ElementType;
+  accent: string;
+  glow: string;
+  border: string;
+  delay?: number;
+}
 
+function formatMXN(n: number) {
+  if (n >= 1000) return `$${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k`;
+  return `$${n.toLocaleString("es-MX")}`;
+}
+
+function RevenueCard({ label, sub, value, icon: Icon, accent, glow, border, delay = 0 }: RevenueCardProps) {
+  const animated = useCountUp(value, 1000 + delay);
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-      {cards.map((card) => (
-        <Card key={card.label} className="relative overflow-hidden">
-          <CardContent className="p-4">
-            <div className={`inline-flex p-2 rounded-lg ${card.bg} mb-3`}>
-              <card.icon className={`h-4 w-4 ${card.color}`} />
-            </div>
-            <p className="text-2xl font-bold text-stone-900 leading-tight" style={{ fontFamily: "Nunito, sans-serif" }}>
-              {card.value}
-            </p>
-            <p className="text-xs text-stone-500 mt-0.5 font-medium">{card.label}</p>
-            <p className="text-xs text-stone-400 mt-0.5">{card.sub}</p>
-          </CardContent>
-        </Card>
-      ))}
+    <div
+      className={`relative overflow-hidden rounded-2xl bg-white border ${border} shadow-sm group hover:shadow-md transition-shadow duration-200`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {/* Glow */}
+      <div className={`pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full ${glow} blur-2xl opacity-60`} />
+      {/* Left accent bar */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${accent} rounded-l-2xl`} />
+
+      <div className="p-5 pl-6">
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">{label}</p>
+            <p className="text-[11px] text-stone-400 mt-0.5">{sub}</p>
+          </div>
+          <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${glow} border ${border}`}>
+            <Icon className={`h-4 w-4 ${accent.replace("bg-", "text-").replace("/80", "")}`} />
+          </div>
+        </div>
+        <p className="text-3xl font-extrabold text-stone-900 leading-none" style={{ fontFamily: "Nunito, sans-serif" }}>
+          {formatMXN(animated)}
+        </p>
+        <p className="text-xs text-stone-400 mt-1">MXN</p>
+      </div>
+    </div>
+  );
+}
+
+export function KpiCards({ kpis }: KpiProps) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <RevenueCard
+        label="Ingresos Hoy"
+        sub="check-ins de hoy"
+        value={kpis.todayRevenue}
+        icon={DollarSign}
+        accent="bg-emerald-500"
+        glow="bg-emerald-400/15"
+        border="border-emerald-200"
+        delay={0}
+      />
+      <RevenueCard
+        label="Esta Semana"
+        sub="últimos 7 días"
+        value={kpis.weekRevenue}
+        icon={CalendarDays}
+        accent="bg-[#e94560]"
+        glow="bg-[#e94560]/10"
+        border="border-rose-200"
+        delay={80}
+      />
+      <RevenueCard
+        label="Este Mes"
+        sub="últimos 30 días"
+        value={kpis.monthRevenue}
+        icon={TrendingUp}
+        accent="bg-amber-500"
+        glow="bg-amber-400/15"
+        border="border-amber-200"
+        delay={160}
+      />
     </div>
   );
 }

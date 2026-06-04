@@ -27,7 +27,12 @@ export function RecentActivity({ activity }: { activity: ActivityItem[] }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {activity.length === 0 && (
-          <p className="text-stone-400 text-sm text-center py-4">Sin actividad reciente</p>
+          <div className="flex flex-col items-center justify-center py-8 gap-2">
+            <div className="h-10 w-10 rounded-full bg-stone-100 flex items-center justify-center">
+              <span className="text-xl">🐾</span>
+            </div>
+            <p className="text-stone-400 text-sm font-medium">Sin actividad reciente</p>
+          </div>
         )}
         {activity.map((item) => {
           const s = statusMap[item.status] ?? { label: item.status, variant: "checkout" as const };
