@@ -1,50 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { BunkBedUnit, BedData } from "./bunk-bed-unit";
+import { BedData } from "./bunk-bed-unit";
 import { BedCard } from "./bed-card";
 import { BedLegend } from "./bed-legend";
 import { BedDetailDialog } from "./bed-detail-dialog";
+import { FloorPlanRoom } from "./floor-plan-room";
+import { ReservationFormDialog } from "@/components/reservations/reservation-form-dialog";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
-type RoomFilter = "all" | "1" | "2" | "3";
-
-function groupByRoom(beds: BedData[]) {
-  const byRoom: Record<number, BedData[]> = {};
-  beds.forEach((b) => {
-    if (!byRoom[b.room]) byRoom[b.room] = [];
-    byRoom[b.room].push(b);
-  });
-  return byRoom;
-}
-
-/** Returns a map: floor -> bunkNumber -> { top, bottom } */
-function groupByFloorAndBunkPairs(beds: BedData[]) {
-  const floors: Record<number, Record<number, { top?: BedData; bottom?: BedData }>> = {};
-  beds.forEach((b) => {
-    const floor = b.floor;
-    const bunk = b.bunkNumber ?? 0;
-    if (!floors[floor]) floors[floor] = {};
-    if (!floors[floor][bunk]) floors[floor][bunk] = {};
-    if (b.position === "TOP") {
-      floors[floor][bunk].top = b;
-    } else {
-      floors[floor][bunk].bottom = b;
-    }
-  });
-  return floors;
-}
-
-const floorLabels: Record<number, string> = {
-  1: "Planta Baja",
-  2: "Planta Alta",
-};
+type RoomTab = "1" | "2" | "3";
 
 export function BedMapView() {
   const [beds, setBeds] = useState<BedData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<RoomFilter>("all");
-  const [selectedBed, setSelectedBed] = useState<BedData | null>(null);
+  const [roomTab, setRoomTab] = useState<RoomTab>("1");
+  const [floor, setFloor] = useState<1 | 2>(1);
+  // selected bed for detail/check-in/out (reserved or occupied)
+  const [detailBed, setDetailBed] = useState<BedData | null>(null);
+  // bed id for new reservation dialog (available beds)
+  const [newResoBedId, setNewResoBedId] = useState<string | null>(null);
 
   const fetchBeds = async () => {
     setLoading(true);
@@ -58,16 +33,22 @@ export function BedMapView() {
 
   useEffect(() => { fetchBeds(); }, []);
 
-  const rooms = groupByRoom(beds);
-  const roomNames: Record<number, string> = { 1: "Hab. Mixta 1", 2: "Hab. Mixta 2", 3: "Cuarto Privado" };
-
-  const filteredRooms = filter === "all" ? [1, 2, 3] : [parseInt(filter)];
+  const handleBedClick = (bed: BedData) => {
+    if (bed.currentStatus === "AVAILABLE") {
+      setNewResoBedId(bed.id.toString());
+    } else {
+      setDetailBed(bed);
+    }
+  };
 
   const stats = {
     available: beds.filter((b) => b.currentStatus === "AVAILABLE").length,
-    occupied: beds.filter((b) => b.currentStatus === "OCCUPIED").length,
-    reserved: beds.filter((b) => b.currentStatus === "RESERVED").length,
+    occupied:  beds.filter((b) => b.currentStatus === "OCCUPIED").length,
+    reserved:  beds.filter((b) => b.currentStatus === "RESERVED").length,
   };
+
+  const roomBeds = beds.filter((b) => b.room === parseInt(roomTab));
+  const floorBeds = roomBeds.filter((b) => b.floor === floor);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -81,94 +62,97 @@ export function BedMapView() {
             {stats.occupied} ocupadas · {stats.reserved} reservadas · {stats.available} disponibles
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {(["all", "1", "2", "3"] as RoomFilter[]).map((r) => (
-            <Button
-              key={r}
-              variant={filter === r ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter(r)}
-            >
-              {r === "all" ? "Todas" : r === "3" ? "Privado" : `Hab. ${r}`}
-            </Button>
-          ))}
-          <Button variant="outline" size="sm" onClick={fetchBeds} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          </Button>
-        </div>
+        <Button variant="outline" size="sm" onClick={fetchBeds} disabled={loading}>
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          Actualizar
+        </Button>
       </div>
 
       <BedLegend />
 
-      {/* Rooms */}
-      {filteredRooms.map((roomNum) => {
-        const roomBeds = rooms[roomNum] ?? [];
-        if (roomBeds.length === 0) return null;
+      {/* Room tabs */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {(["1", "2", "3"] as RoomTab[]).map((r) => (
+          <Button
+            key={r}
+            variant={roomTab === r ? "default" : "outline"}
+            size="sm"
+            onClick={() => { setRoomTab(r); setFloor(1); }}
+          >
+            {r === "3" ? "Cuarto Privado" : `Habitación ${r}`}
+          </Button>
+        ))}
+      </div>
 
-        // Private room — single large card
-        if (roomNum === 3) {
-          return (
-            <div key={roomNum} className="bg-[#16213e] rounded-xl border border-slate-700/50 p-6">
-              <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Nunito, sans-serif" }}>
-                Cuarto Privado / Airbnb
+      {/* Dorm floor plan */}
+      {roomTab !== "3" && (
+        <div className="bg-[#16213e] rounded-xl border border-slate-700/50 p-5 space-y-5">
+          {/* Room header + floor toggle */}
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+                {roomTab === "1" ? "Hab. Mixta 1" : "Hab. Mixta 2"}
               </h2>
-              <div className="flex gap-4 flex-wrap">
-                {roomBeds.map((bed) => (
-                  <BedCard key={bed.id} bed={bed} onClick={() => setSelectedBed(bed)} />
-                ))}
-              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Haz clic en una cama para reservar o ver detalles
+              </p>
             </div>
-          );
-        }
-
-        const floorPairs = groupByFloorAndBunkPairs(roomBeds);
-
-        return (
-          <div key={roomNum} className="bg-[#16213e] rounded-xl border border-slate-700/50 p-6">
-            <h2 className="text-lg font-bold text-white mb-5" style={{ fontFamily: "Nunito, sans-serif" }}>
-              {roomNames[roomNum]}
-            </h2>
-            <div className="space-y-6">
-              {[1, 2].map((floor) => {
-                const pairs = floorPairs[floor];
-                if (!pairs) return null;
-                const bunkNums = Object.keys(pairs)
-                  .map(Number)
-                  .sort((a, b) => a - b);
-                return (
-                  <div key={floor}>
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
-                      {floorLabels[floor] ?? `Piso ${floor}`}
-                    </p>
-                    <div className="flex flex-wrap gap-4">
-                      {bunkNums.map((bunkNum) => {
-                        const pair = pairs[bunkNum];
-                        if (!pair.top || !pair.bottom) return null;
-                        return (
-                          <BunkBedUnit
-                            key={bunkNum}
-                            topBed={pair.top}
-                            bottomBed={pair.bottom}
-                            bunkLabel={`Litera ${bunkNum}`}
-                            onClick={(bed) => setSelectedBed(bed)}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="flex gap-2">
+              <Button
+                variant={floor === 1 ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFloor(1)}
+              >
+                Planta Baja
+              </Button>
+              <Button
+                variant={floor === 2 ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFloor(2)}
+              >
+                Planta Alta
+              </Button>
             </div>
           </div>
-        );
-      })}
 
-      {selectedBed && (
+          {/* Floor plan */}
+          {floorBeds.length > 0 ? (
+            <FloorPlanRoom beds={floorBeds} onBedClick={handleBedClick} />
+          ) : (
+            <p className="text-sm text-slate-500 text-center py-8">Sin camas registradas en este piso</p>
+          )}
+        </div>
+      )}
+
+      {/* Private room */}
+      {roomTab === "3" && (
+        <div className="bg-[#16213e] rounded-xl border border-slate-700/50 p-6">
+          <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Nunito, sans-serif" }}>
+            Cuarto Privado / Airbnb
+          </h2>
+          <div className="flex gap-4 flex-wrap">
+            {roomBeds.map((bed) => (
+              <BedCard key={bed.id} bed={bed} onClick={() => handleBedClick(bed)} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Dialogs */}
+      {detailBed && (
         <BedDetailDialog
-          bed={selectedBed}
-          open={!!selectedBed}
-          onClose={() => setSelectedBed(null)}
+          bed={detailBed}
+          open={!!detailBed}
+          onClose={() => setDetailBed(null)}
           onUpdate={fetchBeds}
+        />
+      )}
+      {newResoBedId && (
+        <ReservationFormDialog
+          open={!!newResoBedId}
+          onClose={() => setNewResoBedId(null)}
+          onSaved={() => { setNewResoBedId(null); fetchBeds(); }}
+          initialBedId={newResoBedId}
         />
       )}
     </div>
