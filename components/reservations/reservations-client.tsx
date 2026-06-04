@@ -9,6 +9,8 @@ import { StatusBadge } from "./status-badge";
 import { ReservationFormDialog } from "./reservation-form-dialog";
 import { formatDate, formatCurrency, getNights } from "@/lib/utils";
 import { Plus, Search, LogIn, LogOut, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Reservation {
   id: number;
@@ -141,14 +143,33 @@ export function ReservationsClient() {
               </tr>
             </thead>
             <tbody>
-              {loading && (
-                <tr>
-                  <td colSpan={8} className="text-center py-10 text-stone-400">Cargando...</td>
+              {loading && Array.from({ length: 6 }).map((_, i) => (
+                <tr key={`sk-${i}`} className="border-b border-stone-300/30">
+                  {Array.from({ length: 8 }).map((__, j) => (
+                    <td key={j} className="px-4 py-3"><Skeleton className="h-5 w-full" /></td>
+                  ))}
                 </tr>
-              )}
+              ))}
               {!loading && reservations.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center py-10 text-stone-400">No se encontraron reservaciones</td>
+                  <td colSpan={8}>
+                    <EmptyState
+                      title={search || statusFilter !== "ALL" ? "Sin resultados" : "Aún no hay reservaciones"}
+                      description={
+                        search || statusFilter !== "ALL"
+                          ? "Prueba con otro nombre o cambia el filtro de estado."
+                          : "Crea tu primera reservación para empezar a llenar el hostal."
+                      }
+                      action={
+                        !search && statusFilter === "ALL" ? (
+                          <Button onClick={() => { setInitialBedId(undefined); setShowForm(true); }}>
+                            <Plus className="h-4 w-4" />
+                            Nueva Reservación
+                          </Button>
+                        ) : undefined
+                      }
+                    />
+                  </td>
                 </tr>
               )}
               {!loading && reservations.map((r) => (

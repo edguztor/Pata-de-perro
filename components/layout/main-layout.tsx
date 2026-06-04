@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import { Sidebar } from "./sidebar";
+import { Sidebar, type SidebarUser } from "./sidebar";
 import { Logo } from "@/components/brand/logo";
 
-export function MainLayout({ children }: { children: React.ReactNode }) {
+export function MainLayout({ children, user }: { children: React.ReactNode; user: SidebarUser }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -31,7 +31,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} user={user} />
 
       <main className="ml-0 flex-1 overflow-x-hidden pt-14 lg:ml-64 lg:pt-0">
         <div className="p-6 md:p-8">{children}</div>

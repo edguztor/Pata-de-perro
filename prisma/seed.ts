@@ -1,6 +1,7 @@
 import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { addDays, subDays, startOfDay } from "date-fns";
+import { hashPassword } from "../lib/auth";
 
 const url = process.env.DATABASE_URL ?? `file:${process.cwd()}/prisma/dev.db`;
 const authToken = process.env.DATABASE_AUTH_TOKEN;
@@ -14,6 +15,17 @@ async function main() {
   await prisma.guest.deleteMany();
   await prisma.bed.deleteMany();
   await prisma.setting.deleteMany();
+  await prisma.user.deleteMany();
+
+  // Default admin account (override with SEED_ADMIN_* env vars).
+  await prisma.user.create({
+    data: {
+      username: process.env.SEED_ADMIN_USERNAME ?? "admin",
+      name: process.env.SEED_ADMIN_NAME ?? "Administrador",
+      passwordHash: await hashPassword(process.env.SEED_ADMIN_PASSWORD ?? "admin123"),
+      role: "ADMIN",
+    },
+  });
 
   await prisma.setting.createMany({
     data: [

@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { hashPassword } from "./auth";
 
 const SCHEMA_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS "Bed" (
@@ -44,6 +45,15 @@ const SCHEMA_STATEMENTS = [
     "value" TEXT NOT NULL
   )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS "Setting_key_key" ON "Setting"("key")`,
+  `CREATE TABLE IF NOT EXISTS "User" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "username" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT 'RECEPTIONIST',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "User_username_key" ON "User"("username")`,
 ];
 
 async function ensureSchema() {
@@ -104,6 +114,17 @@ async function seedDatabase() {
   console.log(`[db-init] Created ${beds.length} beds`);
 }
 
+async function seedAdminUser() {
+  const username = process.env.SEED_ADMIN_USERNAME ?? "admin";
+  const password = process.env.SEED_ADMIN_PASSWORD ?? "admin123";
+  const name = process.env.SEED_ADMIN_NAME ?? "Administrador";
+  const passwordHash = await hashPassword(password);
+  await prisma.user.create({
+    data: { username, name, passwordHash, role: "ADMIN" },
+  });
+  console.log(`[db-init] Created admin user "${username}"`);
+}
+
 let initialized = false;
 
 export async function ensureInitialized() {
@@ -112,6 +133,10 @@ export async function ensureInitialized() {
   const count = await prisma.bed.count();
   if (count === 0) {
     await seedDatabase();
+  }
+  const userCount = await prisma.user.count();
+  if (userCount === 0) {
+    await seedAdminUser();
   }
   initialized = true;
 }

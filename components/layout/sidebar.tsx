@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   BedDouble,
@@ -9,27 +9,55 @@ import {
   BarChart3,
   Settings,
   X,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand/logo";
-import { Mascot } from "@/components/brand/mascot";
+import type { Role } from "@/lib/auth";
 
-const navItems = [
-  { href: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/bed-map", icon: BedDouble, label: "Mapa de Camas" },
-  { href: "/reservations", icon: CalendarDays, label: "Reservaciones" },
-  { href: "/guests", icon: Users, label: "Huéspedes" },
-  { href: "/revenue", icon: BarChart3, label: "Ingresos" },
-  { href: "/settings", icon: Settings, label: "Configuración" },
+export interface SidebarUser {
+  name: string;
+  username: string;
+  role: Role;
+}
+
+const navItems: { href: string; icon: typeof LayoutDashboard; label: string; roles: Role[] }[] = [
+  { href: "/", icon: LayoutDashboard, label: "Dashboard", roles: ["ADMIN"] },
+  { href: "/bed-map", icon: BedDouble, label: "Mapa de Camas", roles: ["ADMIN", "RECEPTIONIST"] },
+  { href: "/reservations", icon: CalendarDays, label: "Reservaciones", roles: ["ADMIN", "RECEPTIONIST"] },
+  { href: "/guests", icon: Users, label: "Huéspedes", roles: ["ADMIN"] },
+  { href: "/revenue", icon: BarChart3, label: "Ingresos", roles: ["ADMIN"] },
+  { href: "/settings", icon: Settings, label: "Configuración", roles: ["ADMIN"] },
 ];
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  user: SidebarUser;
 }
 
-export function Sidebar({ isOpen, onClose }: SidebarProps) {
+const ROLE_LABEL: Record<Role, string> = {
+  ADMIN: "Administrador",
+  RECEPTIONIST: "Recepcionista",
+};
+
+export function Sidebar({ isOpen, onClose, user }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const items = navItems.filter((item) => item.roles.includes(user.role));
+  const initials = user.name
+    .split(" ")
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <aside
@@ -53,8 +81,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-1 flex-col gap-1.5 p-4">
-        {navItems.map(({ href, icon: Icon, label }, i) => {
+      <nav className="flex flex-1 flex-col gap-1.5 p-4 overflow-y-auto">
+        {items.map(({ href, icon: Icon, label }, i) => {
           const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
@@ -92,20 +120,24 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         })}
       </nav>
 
-      {/* Footer — mascot */}
+      {/* Footer — user + logout */}
       <div className="border-t border-stone-200 p-4">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ffffff] to-[#ece4d5] p-4">
-          <div className="flex items-center gap-3">
-            <Mascot className="h-12 w-12 flex-shrink-0 animate-bob" tintClass="text-stone-700" />
-            <div className="leading-tight">
-              <p className="text-xs font-bold text-stone-900">¡Bienvenido!</p>
-              <p className="text-[11px] text-stone-500">Tu hostal, en orden 🐾</p>
-            </div>
+        <div className="flex items-center gap-3 rounded-2xl bg-white/70 border border-stone-200 p-3">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#e94560] to-[#f59e0b] text-xs font-bold text-white">
+            {initials}
           </div>
-          {/* subtle glow */}
-          <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-[#e94560]/10 blur-2xl" />
+          <div className="min-w-0 leading-tight">
+            <p className="text-xs font-bold text-stone-900 truncate">{user.name}</p>
+            <p className="text-[11px] text-stone-500">{ROLE_LABEL[user.role]}</p>
+          </div>
         </div>
-        <p className="mt-3 text-center text-[10px] text-stone-400">v1.0 · Admin Panel</p>
+        <button
+          onClick={handleLogout}
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white/40 px-3 py-2 text-xs font-semibold text-stone-600 transition-colors hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Cerrar sesión
+        </button>
       </div>
     </aside>
   );

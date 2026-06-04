@@ -54,3 +54,12 @@ model Setting {
   key   String @unique
   value String
 }
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("RECEPTIONIST")
+  createdAt    DateTime @default(now())
+}
