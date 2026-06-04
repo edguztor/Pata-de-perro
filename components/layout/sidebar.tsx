@@ -8,10 +8,11 @@ import {
   Users,
   BarChart3,
   Settings,
-  PawPrint,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/brand/logo";
+import { DogMascot } from "@/components/brand/dog-mascot";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -33,23 +34,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 flex flex-col bg-[#0d1627] border-r border-slate-700/50 transition-transform duration-200",
+        "fixed inset-y-0 left-0 z-40 w-64 flex flex-col border-r border-slate-800/80 transition-transform duration-200",
+        "bg-gradient-to-b from-[#0d1627] to-[#0a0f1e]",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-slate-700/50 px-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#e94560]">
-            <PawPrint className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <p className="font-bold text-white leading-none" style={{ fontFamily: "Nunito, sans-serif" }}>
-              Pata de Perro
-            </p>
-            <p className="text-xs text-slate-400">Hostel · Querétaro</p>
-          </div>
-        </div>
+      <div className="flex h-16 items-center justify-between border-b border-slate-800/80 px-5">
+        <Logo />
         {/* Close button — only on mobile */}
         <button
           onClick={onClose}
@@ -61,31 +53,59 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-1 p-4">
-        {navItems.map(({ href, icon: Icon, label }) => {
+      <nav className="flex flex-1 flex-col gap-1.5 p-4">
+        {navItems.map(({ href, icon: Icon, label }, i) => {
           const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
               key={href}
               href={href}
               onClick={onClose}
+              style={{ animationDelay: `${i * 40}ms` }}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-150 animate-slide-in-left",
                 isActive
-                  ? "bg-[#e94560]/10 text-[#e94560] border border-[#e94560]/20"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+                  ? "bg-gradient-to-r from-[#e94560]/15 to-transparent text-white"
+                  : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
               )}
             >
-              <Icon className={cn("h-4.5 w-4.5 flex-shrink-0", isActive ? "text-[#e94560]" : "")} size={18} />
+              {/* Active accent bar */}
+              <span
+                className={cn(
+                  "absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-[#e94560] to-[#f59e0b] transition-all duration-200",
+                  isActive ? "opacity-100" : "opacity-0 group-hover:opacity-40"
+                )}
+              />
+              <span
+                className={cn(
+                  "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors",
+                  isActive
+                    ? "bg-[#e94560]/20 text-[#e94560]"
+                    : "text-slate-400 group-hover:text-slate-200"
+                )}
+              >
+                <Icon size={18} />
+              </span>
               {label}
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-slate-700/50 p-4">
-        <p className="text-xs text-slate-500 text-center">v1.0 · Admin Panel</p>
+      {/* Footer — mascot */}
+      <div className="border-t border-slate-800/80 p-4">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#16213e] to-[#0d1627] p-4">
+          <div className="flex items-center gap-3">
+            <DogMascot className="h-12 w-12 flex-shrink-0 text-amber-400/90 animate-bob" />
+            <div className="leading-tight">
+              <p className="text-xs font-bold text-white">¡Bienvenido!</p>
+              <p className="text-[11px] text-slate-400">Tu hostal, en orden 🐾</p>
+            </div>
+          </div>
+          {/* subtle glow */}
+          <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-[#e94560]/10 blur-2xl" />
+        </div>
+        <p className="mt-3 text-center text-[10px] text-slate-600">v1.0 · Admin Panel</p>
       </div>
     </aside>
   );

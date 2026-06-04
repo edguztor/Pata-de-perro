@@ -5,6 +5,12 @@
   --foreground: #f1f5f9;
   --font-sans: var(--font-inter);
   --font-heading: var(--font-nunito);
+
+  /* Brand palette */
+  --brand-coral: #e94560;
+  --brand-amber: #f59e0b;
+  --surface: #131a2e;
+  --surface-raised: #16213e;
 }
 
 @theme inline {
@@ -51,4 +57,33 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.25s ease-out both;
+}
+
+/* Soft floating bob for the mascot */
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(-1.5deg); }
+}
+
+.animate-bob {
+  animation: bob 4s ease-in-out infinite;
+}
+
+/* Gentle pulse glow for available beds / highlights */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-glow {
+  animation: glow-pulse 2.4s ease-in-out infinite;
 }
