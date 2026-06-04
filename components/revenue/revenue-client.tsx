@@ -19,8 +19,8 @@ interface RevenueItem {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1a2a50] border border-slate-700 rounded-lg p-3 text-sm space-y-1">
-        <p className="text-slate-300 font-medium">{label}</p>
+      <div className="bg-[#f0e8d9] border border-stone-300 rounded-lg p-3 text-sm space-y-1">
+        <p className="text-stone-600 font-medium">{label}</p>
         {payload.map((p: { color: string; name: string; value: number }) => (
           <p key={p.name} style={{ color: p.color }}>{p.name}: {formatCurrency(p.value)}</p>
         ))}
@@ -76,10 +76,10 @@ export function RevenueClient() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+          <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
             Ingresos
           </h1>
-          <p className="text-slate-400 text-sm">Reportes de ganancias y ocupación</p>
+          <p className="text-stone-500 text-sm">Reportes de ganancias y ocupación</p>
         </div>
         <Button variant="outline" onClick={handleExport}>
           <Download className="h-4 w-4" />
@@ -108,16 +108,16 @@ export function RevenueClient() {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Ingresos", value: formatCurrency(totals.revenue), color: "text-emerald-400" },
+          { label: "Total Ingresos", value: formatCurrency(totals.revenue), color: "text-emerald-600" },
           { label: "Dormitorio", value: formatCurrency(totals.dorm), color: "text-blue-400" },
           { label: "Cuarto Privado", value: formatCurrency(totals.private), color: "text-purple-400" },
-          { label: "Total Reservaciones", value: totals.count.toString(), color: "text-amber-400" },
+          { label: "Total Reservaciones", value: totals.count.toString(), color: "text-amber-600" },
         ].map((card) => (
           <Card key={card.label}>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="h-4 w-4 text-slate-500" />
-                <p className="text-xs text-slate-400">{card.label}</p>
+                <TrendingUp className="h-4 w-4 text-stone-400" />
+                <p className="text-xs text-stone-500">{card.label}</p>
               </div>
               <p className={`text-2xl font-bold ${card.color}`} style={{ fontFamily: "Nunito, sans-serif" }}>
                 {card.value}
@@ -135,7 +135,7 @@ export function RevenueClient() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="h-[250px] flex items-center justify-center text-slate-500">Cargando...</div>
+              <div className="h-[250px] flex items-center justify-center text-stone-400">Cargando...</div>
             ) : (
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
@@ -158,7 +158,7 @@ export function RevenueClient() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="h-[250px] flex items-center justify-center text-slate-500">Cargando...</div>
+              <div className="h-[250px] flex items-center justify-center text-stone-400">Cargando...</div>
             ) : (
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
@@ -189,36 +189,36 @@ export function RevenueClient() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/50 bg-[#0d1627]">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase">Período</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400 uppercase">Dormitorio</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400 uppercase">Privado</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400 uppercase">Total</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400 uppercase">Reservaciones</th>
+                <tr className="border-b border-stone-200 bg-[#ece4d5]">
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Período</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Dormitorio</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Privado</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Total</th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Reservaciones</th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((row, i) => (
-                  <tr key={i} className="border-b border-slate-700/30 hover:bg-slate-800/20">
-                    <td className="px-4 py-2.5 text-slate-300">{row.period}</td>
+                  <tr key={i} className="border-b border-stone-300/30 hover:bg-stone-100/20">
+                    <td className="px-4 py-2.5 text-stone-600">{row.period}</td>
                     <td className="px-4 py-2.5 text-right text-blue-400">{formatCurrency(row.dormRevenue)}</td>
                     <td className="px-4 py-2.5 text-right text-purple-400">{formatCurrency(row.privateRevenue)}</td>
-                    <td className="px-4 py-2.5 text-right text-emerald-400 font-medium">{formatCurrency(row.revenue)}</td>
-                    <td className="px-4 py-2.5 text-right text-slate-400">{row.count}</td>
+                    <td className="px-4 py-2.5 text-right text-emerald-600 font-medium">{formatCurrency(row.revenue)}</td>
+                    <td className="px-4 py-2.5 text-right text-stone-500">{row.count}</td>
                   </tr>
                 ))}
                 {data.length === 0 && (
-                  <tr><td colSpan={5} className="text-center py-8 text-slate-500">No hay datos para este período</td></tr>
+                  <tr><td colSpan={5} className="text-center py-8 text-stone-400">No hay datos para este período</td></tr>
                 )}
               </tbody>
               {data.length > 0 && (
                 <tfoot>
-                  <tr className="border-t border-slate-700 bg-[#0d1627]">
-                    <td className="px-4 py-3 text-xs font-semibold text-slate-400 uppercase">Total</td>
+                  <tr className="border-t border-stone-300 bg-[#ece4d5]">
+                    <td className="px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Total</td>
                     <td className="px-4 py-3 text-right text-blue-400 font-bold">{formatCurrency(totals.dorm)}</td>
                     <td className="px-4 py-3 text-right text-purple-400 font-bold">{formatCurrency(totals.private)}</td>
-                    <td className="px-4 py-3 text-right text-emerald-400 font-bold">{formatCurrency(totals.revenue)}</td>
-                    <td className="px-4 py-3 text-right text-slate-400 font-bold">{totals.count}</td>
+                    <td className="px-4 py-3 text-right text-emerald-600 font-bold">{formatCurrency(totals.revenue)}</td>
+                    <td className="px-4 py-3 text-right text-stone-500 font-bold">{totals.count}</td>
                   </tr>
                 </tfoot>
               )}

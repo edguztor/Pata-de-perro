@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import { BedData } from "./bunk-bed-unit";
 
 const STATUS_BG: Record<string, string> = {
-  AVAILABLE: "bg-emerald-900/50 border-emerald-500/40 hover:bg-emerald-800/60",
-  OCCUPIED:  "bg-rose-900/50  border-rose-500/40  hover:bg-rose-800/60",
-  RESERVED:  "bg-amber-900/50 border-amber-500/40 hover:bg-amber-800/60",
-  MAINTENANCE:"bg-slate-800/50 border-slate-500/40 hover:bg-slate-700/60",
+  AVAILABLE: "bg-emerald-100 border-emerald-400 hover:bg-emerald-200",
+  OCCUPIED:  "bg-rose-100  border-rose-400  hover:bg-rose-200",
+  RESERVED:  "bg-amber-100 border-amber-400 hover:bg-amber-200",
+  MAINTENANCE:"bg-stone-100 border-stone-300 hover:bg-stone-200",
 };
 const STATUS_DOT: Record<string, string> = {
   AVAILABLE: "bg-emerald-400",
@@ -35,13 +35,13 @@ function BedSlot({ bed, position, onClick }: { bed: BedData; position: "top" | "
       )}
     >
       <div className="flex items-center justify-between mb-0.5">
-        <span className="text-[9px] text-slate-400 font-medium leading-none">
+        <span className="text-[9px] text-stone-500 font-medium leading-none">
           {position === "top" ? "↑ Alta" : "↓ Baja"}
         </span>
         <span className={cn("h-1.5 w-1.5 rounded-full flex-shrink-0", STATUS_DOT[s] ?? STATUS_DOT.AVAILABLE)} />
       </div>
-      <p className="text-[11px] font-bold text-white leading-tight truncate">{bed.name}</p>
-      <p className="text-[9px] text-slate-400 leading-tight truncate">
+      <p className="text-[11px] font-bold text-stone-900 leading-tight truncate">{bed.name}</p>
+      <p className="text-[9px] text-stone-500 leading-tight truncate">
         {guest ?? STATUS_LABEL[s] ?? s}
       </p>
     </button>
@@ -61,11 +61,11 @@ function BunkUnit({
 }) {
   return (
     <div className="flex flex-col items-center" style={{ width: 128 }}>
-      <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 text-center">{label}</p>
-      <div className="w-full rounded-md border border-slate-600/50 overflow-hidden shadow-lg">
+      <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-1 text-center">{label}</p>
+      <div className="w-full rounded-md border border-stone-300 overflow-hidden shadow-lg">
         <BedSlot bed={topBed} position="top" onClick={() => onClick(topBed)} />
         {/* bunk frame rail */}
-        <div className="h-[3px] bg-slate-600/70 border-x border-slate-600/60" />
+        <div className="h-[3px] bg-stone-300 border-x border-stone-300" />
         <BedSlot bed={bottomBed} position="bottom" onClick={() => onClick(bottomBed)} />
       </div>
     </div>
@@ -75,18 +75,18 @@ function BunkUnit({
 function StaircaseIcon() {
   return (
     <div className="flex flex-col items-center gap-1 select-none pointer-events-none">
-      <div className="bg-[#1a2744] border border-slate-600/60 rounded-lg px-3 py-2 flex flex-col items-center gap-1.5">
+      <div className="bg-[#efe8db] border border-stone-300 rounded-lg px-3 py-2 flex flex-col items-center gap-1.5">
         {/* step pattern */}
         <div className="flex flex-col gap-[2px]">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-slate-600 rounded-[1px]"
+              className="bg-stone-300 rounded-[1px]"
               style={{ height: 3, width: 6 + i * 6 }}
             />
           ))}
         </div>
-        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Escalera</span>
+        <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest">Escalera</span>
       </div>
     </div>
   );
@@ -95,11 +95,11 @@ function StaircaseIcon() {
 function DoorIcon() {
   return (
     <div className="flex flex-col items-center gap-1 select-none pointer-events-none">
-      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Puerta</span>
+      <span className="text-[9px] font-bold text-stone-400 uppercase tracking-widest">Puerta</span>
       {/* double door leaves */}
       <div className="flex gap-0.5">
-        <div className="w-5 h-8 bg-[#1a2744] border border-slate-500/60 rounded-sm" />
-        <div className="w-5 h-8 bg-[#1a2744] border border-slate-500/60 rounded-sm" />
+        <div className="w-5 h-8 bg-[#efe8db] border border-stone-300 rounded-sm" />
+        <div className="w-5 h-8 bg-[#efe8db] border border-stone-300 rounded-sm" />
       </div>
     </div>
   );
@@ -137,7 +137,7 @@ export function FloorPlanRoom({ beds, onBedClick }: FloorPlanRoomProps) {
   };
 
   return (
-    <div className="bg-[#0a0f1e] border-2 border-slate-600/70 rounded-xl p-5 select-none">
+    <div className="bg-[#f4efe4] border-2 border-stone-300/70 rounded-xl p-5 select-none">
       {/* Row 1: TL bunk — escalera — TR bunk */}
       <div className="flex items-start justify-between gap-4">
         {renderBunk(0)}

@@ -59,15 +59,15 @@ export function SettingsClient() {
   const set = (key: keyof Settings) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setSettings((s) => ({ ...s, [key]: e.target.value }));
 
-  if (loading) return <div className="text-slate-400 text-center py-20">Cargando...</div>;
+  if (loading) return <div className="text-stone-500 text-center py-20">Cargando...</div>;
 
   return (
     <div className="space-y-6 animate-fade-in max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+        <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
           Configuración
         </h1>
-        <p className="text-slate-400 text-sm">Administra la información y precios del hostal</p>
+        <p className="text-stone-500 text-sm">Administra la información y precios del hostal</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
@@ -105,7 +105,7 @@ export function SettingsClient() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-emerald-400" />
+              <DollarSign className="h-4 w-4 text-emerald-600" />
               Precios (MXN por noche)
             </CardTitle>
           </CardHeader>
@@ -114,7 +114,7 @@ export function SettingsClient() {
               <div className="space-y-1">
                 <Label>Cama en dormitorio</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm">$</span>
                   <Input
                     type="number"
                     className="pl-7"
@@ -124,12 +124,12 @@ export function SettingsClient() {
                     placeholder="200"
                   />
                 </div>
-                <p className="text-xs text-slate-500">Para las 28 camas de dormitorio</p>
+                <p className="text-xs text-stone-400">Para las 28 camas de dormitorio</p>
               </div>
               <div className="space-y-1">
                 <Label>Cuarto privado / Airbnb</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm">$</span>
                   <Input
                     type="number"
                     className="pl-7"
@@ -139,28 +139,28 @@ export function SettingsClient() {
                     placeholder="650"
                   />
                 </div>
-                <p className="text-xs text-slate-500">Para el cuarto privado</p>
+                <p className="text-xs text-stone-400">Para el cuarto privado</p>
               </div>
             </div>
 
             {/* Visual summary */}
-            <div className="mt-4 p-4 bg-[#0d1627] rounded-lg border border-slate-700">
-              <p className="text-xs text-slate-400 mb-2">Ingresos máximos potenciales por noche:</p>
+            <div className="mt-4 p-4 bg-[#ece4d5] rounded-lg border border-stone-300">
+              <p className="text-xs text-stone-500 mb-2">Ingresos máximos potenciales por noche:</p>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-300">28 camas dorm × ${settings.dorm_price_per_night}</span>
-                <span className="text-sm text-emerald-400 font-medium">
+                <span className="text-sm text-stone-600">28 camas dorm × ${settings.dorm_price_per_night}</span>
+                <span className="text-sm text-emerald-600 font-medium">
                   ${(28 * parseFloat(settings.dorm_price_per_night || "0")).toLocaleString("es-MX")} MXN
                 </span>
               </div>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-sm text-slate-300">1 cuarto privado × ${settings.private_price_per_night}</span>
+                <span className="text-sm text-stone-600">1 cuarto privado × ${settings.private_price_per_night}</span>
                 <span className="text-sm text-purple-400 font-medium">
                   ${parseFloat(settings.private_price_per_night || "0").toLocaleString("es-MX")} MXN
                 </span>
               </div>
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-700">
-                <span className="text-sm font-medium text-white">Total máximo / noche</span>
-                <span className="text-base text-white font-bold">
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-300">
+                <span className="text-sm font-medium text-stone-900">Total máximo / noche</span>
+                <span className="text-base text-stone-900 font-bold">
                   ${(28 * parseFloat(settings.dorm_price_per_night || "0") + parseFloat(settings.private_price_per_night || "0")).toLocaleString("es-MX")} MXN
                 </span>
               </div>

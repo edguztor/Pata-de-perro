@@ -67,10 +67,10 @@ export function BedMapView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+          <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
             Mapa de Camas
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
+          <p className="text-stone-500 text-sm mt-0.5">
             {stats.occupied} ocupadas · {stats.reserved} reservadas · {stats.available} disponibles
           </p>
         </div>
@@ -84,9 +84,9 @@ export function BedMapView() {
 
       {/* Error / empty state */}
       {error && !loading && (
-        <div className="bg-rose-950/40 border border-rose-600/40 rounded-xl p-5 text-sm text-rose-200">
+        <div className="bg-rose-50 border border-rose-400 rounded-xl p-5 text-sm text-rose-700">
           <p className="font-semibold mb-1">⚠️ No se pudieron cargar las camas</p>
-          <p className="text-rose-300/90">{error}</p>
+          <p className="text-rose-600">{error}</p>
           <Button variant="outline" size="sm" onClick={fetchBeds} className="mt-3">
             <RefreshCw className="h-4 w-4" /> Reintentar
           </Button>
@@ -109,14 +109,14 @@ export function BedMapView() {
 
       {/* Dorm floor plan */}
       {roomTab !== "3" && (
-        <div className="bg-[#16213e] rounded-xl border border-slate-700/50 p-5 space-y-5">
+        <div className="bg-[#ffffff] rounded-xl border border-stone-200 p-5 space-y-5">
           {/* Room header + floor toggle */}
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <h2 className="text-lg font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+              <h2 className="text-lg font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
                 {roomTab === "1" ? "Hab. Mixta 1" : "Hab. Mixta 2"}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-stone-500 mt-0.5">
                 Haz clic en una cama para reservar o ver detalles
               </p>
             </div>
@@ -142,15 +142,15 @@ export function BedMapView() {
           {floorBeds.length > 0 ? (
             <FloorPlanRoom beds={floorBeds} onBedClick={handleBedClick} />
           ) : (
-            <p className="text-sm text-slate-500 text-center py-8">Sin camas registradas en este piso</p>
+            <p className="text-sm text-stone-400 text-center py-8">Sin camas registradas en este piso</p>
           )}
         </div>
       )}
 
       {/* Private room */}
       {roomTab === "3" && (
-        <div className="bg-[#16213e] rounded-xl border border-slate-700/50 p-6">
-          <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Nunito, sans-serif" }}>
+        <div className="bg-[#ffffff] rounded-xl border border-stone-200 p-6">
+          <h2 className="text-lg font-bold text-stone-900 mb-4" style={{ fontFamily: "Nunito, sans-serif" }}>
             Cuarto Privado / Airbnb
           </h2>
           <div className="flex gap-4 flex-wrap">

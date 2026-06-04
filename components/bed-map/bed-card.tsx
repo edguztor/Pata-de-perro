@@ -18,27 +18,27 @@ interface BedData {
 
 const statusConfig = {
   AVAILABLE: {
-    bg: "bg-emerald-900/30 border-emerald-600/40 hover:bg-emerald-800/40",
+    bg: "bg-emerald-900/30 border-emerald-400 hover:bg-emerald-800/40",
     dot: "bg-emerald-400",
-    text: "text-emerald-300",
+    text: "text-emerald-700",
     label: "Disponible",
   },
   OCCUPIED: {
-    bg: "bg-rose-900/30 border-rose-600/40 hover:bg-rose-800/40",
+    bg: "bg-rose-100 border-rose-400 hover:bg-rose-800/40",
     dot: "bg-rose-400",
-    text: "text-rose-300",
+    text: "text-rose-700",
     label: "Ocupada",
   },
   RESERVED: {
-    bg: "bg-amber-900/30 border-amber-600/40 hover:bg-amber-800/40",
+    bg: "bg-amber-900/30 border-amber-400 hover:bg-amber-800/40",
     dot: "bg-amber-400",
-    text: "text-amber-300",
+    text: "text-amber-700",
     label: "Reservada",
   },
   MAINTENANCE: {
-    bg: "bg-slate-800/50 border-slate-600/40 hover:bg-slate-700/50",
+    bg: "bg-stone-100 border-stone-300 hover:bg-stone-200",
     dot: "bg-slate-400",
-    text: "text-slate-400",
+    text: "text-stone-500",
     label: "Mantenimiento",
   },
 };
@@ -57,7 +57,7 @@ export function BedCard({ bed, onClick }: { bed: BedData; onClick: () => void })
       )}
     >
       <div className="flex items-center justify-between w-full mb-2">
-        <span className="text-xs font-bold text-white">{bed.name}</span>
+        <span className="text-xs font-bold text-stone-900">{bed.name}</span>
         <span className={cn("h-2 w-2 rounded-full flex-shrink-0", cfg.dot)} />
       </div>
 
@@ -73,12 +73,12 @@ export function BedCard({ bed, onClick }: { bed: BedData; onClick: () => void })
 
       <div className="mt-2 flex items-center gap-1">
         {isPrivate ? (
-          <Lock className="h-3 w-3 text-slate-400" />
+          <Lock className="h-3 w-3 text-stone-500" />
         ) : (
-          <BedDouble className="h-3 w-3 text-slate-500" />
+          <BedDouble className="h-3 w-3 text-stone-400" />
         )}
-        {bed.currentStatus === "MAINTENANCE" && <Wrench className="h-3 w-3 text-slate-400" />}
-        <span className="text-[10px] text-slate-500">${bed.pricePerNight}/noche</span>
+        {bed.currentStatus === "MAINTENANCE" && <Wrench className="h-3 w-3 text-stone-500" />}
+        <span className="text-[10px] text-stone-400">${bed.pricePerNight}/noche</span>
       </div>
     </button>
   );

@@ -22,17 +22,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${nunito.variable} ${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#0a0f1e] text-slate-100" style={{ fontFamily: "var(--font-inter)" }}>
+      <body className="min-h-full bg-[#f4efe4] text-stone-800" style={{ fontFamily: "var(--font-inter)" }}>
         {children}
         <Toaster
           position="top-right"
           richColors
-          theme="dark"
+          theme="light"
           toastOptions={{
             style: {
-              background: "#16213e",
-              border: "1px solid #334155",
-              color: "#f1f5f9",
+              background: "#ffffff",
+              border: "1px solid #e7e0d3",
+              color: "#292524",
             },
           }}
         />

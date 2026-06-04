@@ -27,16 +27,16 @@ export function RecentActivity({ activity }: { activity: ActivityItem[] }) {
       </CardHeader>
       <CardContent className="space-y-3">
         {activity.length === 0 && (
-          <p className="text-slate-500 text-sm text-center py-4">Sin actividad reciente</p>
+          <p className="text-stone-400 text-sm text-center py-4">Sin actividad reciente</p>
         )}
         {activity.map((item) => {
           const s = statusMap[item.status] ?? { label: item.status, variant: "checkout" as const };
           return (
-            <div key={item.id} className="flex items-center gap-3 py-2 border-b border-slate-700/50 last:border-0">
+            <div key={item.id} className="flex items-center gap-3 py-2 border-b border-stone-200 last:border-0">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{item.guest.name}</p>
-                <p className="text-xs text-slate-400">{item.bed.name} · {item.bed.roomName}</p>
-                <p className="text-xs text-slate-500">{formatDate(item.checkIn)} → {formatDate(item.checkOut)}</p>
+                <p className="text-sm font-medium text-stone-900 truncate">{item.guest.name}</p>
+                <p className="text-xs text-stone-500">{item.bed.name} · {item.bed.roomName}</p>
+                <p className="text-xs text-stone-400">{formatDate(item.checkIn)} → {formatDate(item.checkOut)}</p>
               </div>
               <Badge variant={s.variant}>{s.label}</Badge>
             </div>

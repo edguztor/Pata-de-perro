@@ -22,7 +22,7 @@ export function KpiCards({ kpis }: KpiProps) {
       value: `${kpis.checkedIn} / ${kpis.totalBeds}`,
       sub: `${kpis.available} disponibles`,
       icon: BedDouble,
-      color: "text-rose-400",
+      color: "text-rose-600",
       bg: "bg-rose-400/10",
     },
     {
@@ -30,7 +30,7 @@ export function KpiCards({ kpis }: KpiProps) {
       value: kpis.reserved.toString(),
       sub: "por hacer check-in",
       icon: CalendarCheck,
-      color: "text-amber-400",
+      color: "text-amber-600",
       bg: "bg-amber-400/10",
     },
     {
@@ -46,7 +46,7 @@ export function KpiCards({ kpis }: KpiProps) {
       value: formatCurrency(kpis.todayRevenue),
       sub: "check-ins de hoy",
       icon: DollarSign,
-      color: "text-emerald-400",
+      color: "text-emerald-600",
       bg: "bg-emerald-400/10",
     },
     {
@@ -75,11 +75,11 @@ export function KpiCards({ kpis }: KpiProps) {
             <div className={`inline-flex p-2 rounded-lg ${card.bg} mb-3`}>
               <card.icon className={`h-4 w-4 ${card.color}`} />
             </div>
-            <p className="text-2xl font-bold text-white leading-tight" style={{ fontFamily: "Nunito, sans-serif" }}>
+            <p className="text-2xl font-bold text-stone-900 leading-tight" style={{ fontFamily: "Nunito, sans-serif" }}>
               {card.value}
             </p>
-            <p className="text-xs text-slate-400 mt-0.5 font-medium">{card.label}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{card.sub}</p>
+            <p className="text-xs text-stone-500 mt-0.5 font-medium">{card.label}</p>
+            <p className="text-xs text-stone-400 mt-0.5">{card.sub}</p>
           </CardContent>
         </Card>
       ))}
