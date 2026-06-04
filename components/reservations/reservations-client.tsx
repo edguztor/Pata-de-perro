@@ -88,10 +88,10 @@ export function ReservationsClient() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+          <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
             Reservaciones
           </h1>
-          <p className="text-slate-400 text-sm">{total} reservaciones en total</p>
+          <p className="text-stone-500 text-sm">{total} reservaciones en total</p>
         </div>
         <Button onClick={() => { setInitialBedId(undefined); setShowForm(true); }}>
           <Plus className="h-4 w-4" />
@@ -102,7 +102,7 @@ export function ReservationsClient() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
           <Input
             placeholder="Buscar por huésped..."
             className="pl-9"
@@ -125,46 +125,46 @@ export function ReservationsClient() {
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-slate-700/50 overflow-hidden bg-[#16213e]">
+      <div className="rounded-xl border border-stone-200 overflow-hidden bg-[#ffffff]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700/50 bg-[#0d1627]">
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Huésped</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Cama</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Check-in</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Check-out</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Noches</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Total</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
-                <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
+              <tr className="border-b border-stone-200 bg-[#ece4d5]">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Huésped</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Cama</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Check-in</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Check-out</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Noches</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Total</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Estado</th>
+                <th className="text-right px-4 py-3 text-xs font-semibold text-stone-500 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={8} className="text-center py-10 text-slate-500">Cargando...</td>
+                  <td colSpan={8} className="text-center py-10 text-stone-400">Cargando...</td>
                 </tr>
               )}
               {!loading && reservations.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center py-10 text-slate-500">No se encontraron reservaciones</td>
+                  <td colSpan={8} className="text-center py-10 text-stone-400">No se encontraron reservaciones</td>
                 </tr>
               )}
               {!loading && reservations.map((r) => (
-                <tr key={r.id} className="border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
+                <tr key={r.id} className="border-b border-stone-300/30 hover:bg-stone-100/30 transition-colors">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-white">{r.guest.name}</p>
-                    {r.guest.email && <p className="text-xs text-slate-400">{r.guest.email}</p>}
+                    <p className="font-medium text-stone-900">{r.guest.name}</p>
+                    {r.guest.email && <p className="text-xs text-stone-500">{r.guest.email}</p>}
                   </td>
                   <td className="px-4 py-3">
-                    <p className="text-white">{r.bed.name}</p>
-                    <p className="text-xs text-slate-400">{r.bed.roomName}</p>
+                    <p className="text-stone-900">{r.bed.name}</p>
+                    <p className="text-xs text-stone-500">{r.bed.roomName}</p>
                   </td>
-                  <td className="px-4 py-3 text-slate-300">{formatDate(r.checkIn)}</td>
-                  <td className="px-4 py-3 text-slate-300">{formatDate(r.checkOut)}</td>
-                  <td className="px-4 py-3 text-slate-300">{getNights(r.checkIn, r.checkOut)}</td>
-                  <td className="px-4 py-3 text-emerald-400 font-medium">{formatCurrency(r.totalAmount)}</td>
+                  <td className="px-4 py-3 text-stone-600">{formatDate(r.checkIn)}</td>
+                  <td className="px-4 py-3 text-stone-600">{formatDate(r.checkOut)}</td>
+                  <td className="px-4 py-3 text-stone-600">{getNights(r.checkIn, r.checkOut)}</td>
+                  <td className="px-4 py-3 text-emerald-600 font-medium">{formatCurrency(r.totalAmount)}</td>
                   <td className="px-4 py-3"><StatusBadge status={r.status} /></td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
@@ -193,8 +193,8 @@ export function ReservationsClient() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700/50">
-            <p className="text-xs text-slate-400">Página {page} de {totalPages} ({total} total)</p>
+          <div className="flex items-center justify-between px-4 py-3 border-t border-stone-200">
+            <p className="text-xs text-stone-500">Página {page} de {totalPages} ({total} total)</p>
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={() => setPage((p) => p - 1)} disabled={page <= 1}>
                 <ChevronLeft className="h-4 w-4" />

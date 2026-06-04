@@ -5,7 +5,7 @@ export const metadata = { title: "Reservaciones — Pata de Perro" };
 
 export default function ReservationsPage() {
   return (
-    <Suspense fallback={<div className="text-slate-400 text-center py-20">Cargando reservaciones...</div>}>
+    <Suspense fallback={<div className="text-stone-500 text-center py-20">Cargando reservaciones...</div>}>
       <ReservationsClient />
     </Suspense>
   );

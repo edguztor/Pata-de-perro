@@ -158,7 +158,7 @@ export function ReservationFormDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Huésped</p>
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">Huésped</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2 space-y-1">
                 <Label>Nombre completo *</Label>
@@ -179,8 +179,8 @@ export function ReservationFormDialog({
             </div>
           </div>
 
-          <div className="space-y-3 pt-2 border-t border-slate-700">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Reservación</p>
+          <div className="space-y-3 pt-2 border-t border-stone-300">
+            <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">Reservación</p>
             <div className="space-y-1">
               <Label>Cama *</Label>
               <Select
@@ -241,7 +241,7 @@ export function ReservationFormDialog({
               </div>
               <div className="space-y-1">
                 <Label>Total calculado</Label>
-                <div className="flex h-9 w-full items-center rounded-lg border border-slate-600 bg-[#0a0f1e] px-3 text-sm text-emerald-400 font-medium">
+                <div className="flex h-9 w-full items-center rounded-lg border border-stone-300 bg-[#f4efe4] px-3 text-sm text-emerald-600 font-medium">
                   {total > 0 ? `${formatCurrency(total)} (${nights} noches)` : "—"}
                 </div>
               </div>
@@ -253,8 +253,8 @@ export function ReservationFormDialog({
           </div>
 
           {conflictMsg && (
-            <div className="flex items-start gap-2 rounded-lg bg-rose-950/50 border border-rose-600/50 p-3 text-sm text-rose-200">
-              <AlertCircle className="h-4 w-4 text-rose-400 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2 rounded-lg bg-rose-50 border border-rose-300 p-3 text-sm text-rose-700">
+              <AlertCircle className="h-4 w-4 text-rose-600 flex-shrink-0 mt-0.5" />
               <p>{conflictMsg}</p>
             </div>
           )}

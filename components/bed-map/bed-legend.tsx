@@ -11,7 +11,7 @@ export function BedLegend() {
       {items.map(({ color, label }) => (
         <div key={label} className="flex items-center gap-2">
           <span className={`h-3 w-3 rounded-full ${color}`} />
-          <span className="text-slate-400">{label}</span>
+          <span className="text-stone-500">{label}</span>
         </div>
       ))}
     </div>

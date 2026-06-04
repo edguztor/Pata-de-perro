@@ -108,17 +108,17 @@ export function BedDetailDialog({
 
         <div className="space-y-4">
           {/* Status */}
-          <div className="flex items-center justify-between p-3 rounded-lg bg-[#0d1627] border border-slate-700">
-            <span className="text-sm text-slate-300">Estado actual</span>
+          <div className="flex items-center justify-between p-3 rounded-lg bg-[#ece4d5] border border-stone-300">
+            <span className="text-sm text-stone-600">Estado actual</span>
             <Badge variant={statusVariant}>{statusLabelMap[bed.currentStatus]}</Badge>
           </div>
 
           {/* Current Reservation */}
           {res && (
-            <div className="p-4 rounded-lg bg-[#0d1627] border border-slate-700 space-y-2">
-              <p className="text-sm font-semibold text-white">{res.guest.name}</p>
-              {res.guest.phone && <p className="text-xs text-slate-400">{res.guest.phone}</p>}
-              <div className="flex gap-4 text-xs text-slate-400">
+            <div className="p-4 rounded-lg bg-[#ece4d5] border border-stone-300 space-y-2">
+              <p className="text-sm font-semibold text-stone-900">{res.guest.name}</p>
+              {res.guest.phone && <p className="text-xs text-stone-500">{res.guest.phone}</p>}
+              <div className="flex gap-4 text-xs text-stone-500">
                 <span>Check-in: {formatDate(res.checkIn)}</span>
                 <span>Check-out: {formatDate(res.checkOut)}</span>
               </div>

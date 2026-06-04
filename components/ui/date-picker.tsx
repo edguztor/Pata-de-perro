@@ -66,13 +66,13 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
           type="button"
           disabled={disabled}
           className={cn(
-            "flex h-9 w-full items-center gap-2 rounded-lg border border-slate-600 bg-[#0a0f1e] px-3 text-sm text-left transition-colors",
-            "hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-[#e94560]/40",
+            "flex h-9 w-full items-center gap-2 rounded-lg border border-stone-300 bg-[#f4efe4] px-3 text-sm text-left transition-colors",
+            "hover:border-stone-400 focus:outline-none focus:ring-2 focus:ring-[#e94560]/40",
             disabled && "opacity-50 cursor-not-allowed"
           )}
         >
-          <Calendar className="h-4 w-4 text-slate-400 flex-shrink-0" />
-          <span className={selected ? "text-white" : "text-slate-500"}>
+          <Calendar className="h-4 w-4 text-stone-500 flex-shrink-0" />
+          <span className={selected ? "text-stone-900" : "text-stone-400"}>
             {selected ? format(selected, "dd/MM/yyyy") : placeholder}
           </span>
         </button>
@@ -80,28 +80,28 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
 
       <Popover.Portal>
         <Popover.Content
-          className="z-50 w-72 rounded-xl border border-slate-700 bg-[#0d1627] p-4 shadow-2xl"
+          className="z-50 w-72 rounded-xl border border-stone-300 bg-[#ece4d5] p-4 shadow-2xl"
           align="start"
           sideOffset={4}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <div className="flex items-center justify-between mb-3">
             <button type="button" onClick={() => setViewDate((d) => subMonths(d, 1))}
-              className="h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">
+              className="h-7 w-7 rounded-lg flex items-center justify-center text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors">
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <p className="text-sm font-semibold text-white capitalize">
+            <p className="text-sm font-semibold text-stone-900 capitalize">
               {format(viewDate, "MMMM yyyy", { locale: es })}
             </p>
             <button type="button" onClick={() => setViewDate((d) => addMonths(d, 1))}
-              className="h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">
+              className="h-7 w-7 rounded-lg flex items-center justify-center text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors">
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
 
           <div className="grid grid-cols-7 mb-1">
             {WEEKDAYS.map((d) => (
-              <div key={d} className="text-center text-[10px] font-semibold text-slate-500 py-1">{d}</div>
+              <div key={d} className="text-center text-[10px] font-semibold text-stone-400 py-1">{d}</div>
             ))}
           </div>
 
@@ -123,12 +123,12 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
                   title={isBlocked ? "Fecha ocupada" : undefined}
                   className={cn(
                     "h-8 rounded-lg text-xs font-medium transition-colors flex items-center justify-center",
-                    !inMonth && "text-slate-700",
-                    inMonth && !isSelected && !todayMark && !isDisabled && "text-slate-300 hover:bg-slate-700 hover:text-white",
-                    todayMark && !isSelected && !isBlocked && "bg-slate-700/70 text-white",
+                    !inMonth && "text-stone-300",
+                    inMonth && !isSelected && !todayMark && !isDisabled && "text-stone-600 hover:bg-stone-200 hover:text-stone-900",
+                    todayMark && !isSelected && !isBlocked && "bg-stone-200 text-stone-900",
                     isSelected && "bg-[#e94560] text-white font-bold",
-                    isPast && "text-slate-700 cursor-not-allowed",
-                    isBlocked && inMonth && "bg-rose-950/60 text-rose-400 cursor-not-allowed line-through"
+                    isPast && "text-stone-300 cursor-not-allowed",
+                    isBlocked && inMonth && "bg-rose-100 text-rose-600 cursor-not-allowed line-through"
                   )}
                 >
                   {format(day, "d")}
@@ -138,9 +138,9 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
           </div>
 
           {blockedRanges.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-slate-700/50 space-y-1">
+            <div className="mt-3 pt-3 border-t border-stone-200 space-y-1">
               {blockedRanges.map((r, i) => (
-                <p key={i} className="text-[10px] text-rose-400/80 leading-tight">
+                <p key={i} className="text-[10px] text-rose-600 leading-tight">
                   🔴 {r.label ?? "Ocupado"}: {format(r.start, "dd/MM")} – {format(r.end, "dd/MM/yyyy")}
                 </p>
               ))}

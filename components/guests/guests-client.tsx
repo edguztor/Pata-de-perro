@@ -99,45 +99,45 @@ function GuestProfileDialog({ guest, open, onClose }: { guest: Guest | null; ope
           {/* Contact Info */}
           <div className="grid grid-cols-2 gap-3 text-sm">
             {guest.email && (
-              <div className="flex items-center gap-2 text-slate-300"><Mail className="h-4 w-4 text-slate-500" />{guest.email}</div>
+              <div className="flex items-center gap-2 text-stone-600"><Mail className="h-4 w-4 text-stone-400" />{guest.email}</div>
             )}
             {guest.phone && (
-              <div className="flex items-center gap-2 text-slate-300"><Phone className="h-4 w-4 text-slate-500" />{guest.phone}</div>
+              <div className="flex items-center gap-2 text-stone-600"><Phone className="h-4 w-4 text-stone-400" />{guest.phone}</div>
             )}
             {guest.nationality && (
-              <div className="flex items-center gap-2 text-slate-300"><Globe className="h-4 w-4 text-slate-500" />{guest.nationality}</div>
+              <div className="flex items-center gap-2 text-stone-600"><Globe className="h-4 w-4 text-stone-400" />{guest.nationality}</div>
             )}
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-[#0d1627] rounded-lg p-3 text-center border border-slate-700">
-              <p className="text-xl font-bold text-white">{guest.totalVisits}</p>
-              <p className="text-xs text-slate-400">Visitas</p>
+            <div className="bg-[#ece4d5] rounded-lg p-3 text-center border border-stone-300">
+              <p className="text-xl font-bold text-stone-900">{guest.totalVisits}</p>
+              <p className="text-xs text-stone-500">Visitas</p>
             </div>
-            <div className="bg-[#0d1627] rounded-lg p-3 text-center border border-slate-700">
-              <p className="text-lg font-bold text-emerald-400">{formatCurrency(guest.totalSpent)}</p>
-              <p className="text-xs text-slate-400">Total gastado</p>
+            <div className="bg-[#ece4d5] rounded-lg p-3 text-center border border-stone-300">
+              <p className="text-lg font-bold text-emerald-600">{formatCurrency(guest.totalSpent)}</p>
+              <p className="text-xs text-stone-500">Total gastado</p>
             </div>
-            <div className="bg-[#0d1627] rounded-lg p-3 text-center border border-slate-700">
-              <p className="text-sm font-bold text-slate-300">{guest.lastStay ? formatDate(guest.lastStay) : "—"}</p>
-              <p className="text-xs text-slate-400">Última visita</p>
+            <div className="bg-[#ece4d5] rounded-lg p-3 text-center border border-stone-300">
+              <p className="text-sm font-bold text-stone-600">{guest.lastStay ? formatDate(guest.lastStay) : "—"}</p>
+              <p className="text-xs text-stone-500">Última visita</p>
             </div>
           </div>
 
           {/* Reservation History */}
           {fullGuest?.reservations && fullGuest.reservations.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Historial de estancias</p>
+              <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2">Historial de estancias</p>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {fullGuest.reservations.map((r) => (
-                  <div key={r.id} className="flex items-center justify-between p-3 bg-[#0d1627] rounded-lg border border-slate-700 text-sm">
+                  <div key={r.id} className="flex items-center justify-between p-3 bg-[#ece4d5] rounded-lg border border-stone-300 text-sm">
                     <div>
-                      <p className="text-white">{r.bed.name} · {r.bed.roomName}</p>
-                      <p className="text-xs text-slate-400">{formatDate(r.checkIn)} → {formatDate(r.checkOut)}</p>
+                      <p className="text-stone-900">{r.bed.name} · {r.bed.roomName}</p>
+                      <p className="text-xs text-stone-500">{formatDate(r.checkIn)} → {formatDate(r.checkOut)}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-emerald-400">{formatCurrency(r.totalAmount)}</span>
+                      <span className="text-emerald-600">{formatCurrency(r.totalAmount)}</span>
                       <StatusBadge status={r.status} />
                     </div>
                   </div>
@@ -174,10 +174,10 @@ export function GuestsClient() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+          <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
             Huéspedes
           </h1>
-          <p className="text-slate-400 text-sm">{guests.length} huéspedes registrados</p>
+          <p className="text-stone-500 text-sm">{guests.length} huéspedes registrados</p>
         </div>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="h-4 w-4" />
@@ -187,16 +187,16 @@ export function GuestsClient() {
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
         <Input placeholder="Buscar huésped..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       {/* Grid */}
-      {loading && <p className="text-slate-500 text-center py-10">Cargando...</p>}
+      {loading && <p className="text-stone-400 text-center py-10">Cargando...</p>}
       {!loading && guests.length === 0 && (
         <div className="text-center py-16">
-          <Users className="h-12 w-12 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400">No hay huéspedes registrados</p>
+          <Users className="h-12 w-12 text-stone-400 mx-auto mb-3" />
+          <p className="text-stone-500">No hay huéspedes registrados</p>
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -204,21 +204,21 @@ export function GuestsClient() {
           <button
             key={g.id}
             onClick={() => setSelectedGuest(g)}
-            className="text-left bg-[#16213e] border border-slate-700/50 rounded-xl p-4 hover:border-[#e94560]/40 hover:bg-[#1a2a50] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#e94560]"
+            className="text-left bg-[#ffffff] border border-stone-200 rounded-xl p-4 hover:border-[#e94560]/40 hover:bg-[#f0e8d9] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#e94560]"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e94560]/10 text-[#e94560] font-bold text-sm flex-shrink-0">
                 {g.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
               </div>
               <div className="text-right">
-                <p className="text-xs text-emerald-400 font-medium">{formatCurrency(g.totalSpent)}</p>
-                <p className="text-xs text-slate-500">{g.totalVisits} visita{g.totalVisits !== 1 ? "s" : ""}</p>
+                <p className="text-xs text-emerald-600 font-medium">{formatCurrency(g.totalSpent)}</p>
+                <p className="text-xs text-stone-400">{g.totalVisits} visita{g.totalVisits !== 1 ? "s" : ""}</p>
               </div>
             </div>
-            <p className="font-semibold text-white">{g.name}</p>
-            {g.nationality && <p className="text-xs text-slate-400 mt-0.5">{g.nationality}</p>}
-            {g.email && <p className="text-xs text-slate-500 mt-0.5 truncate">{g.email}</p>}
-            {g.lastStay && <p className="text-xs text-slate-500 mt-1">Última visita: {formatDate(g.lastStay)}</p>}
+            <p className="font-semibold text-stone-900">{g.name}</p>
+            {g.nationality && <p className="text-xs text-stone-500 mt-0.5">{g.nationality}</p>}
+            {g.email && <p className="text-xs text-stone-400 mt-0.5 truncate">{g.email}</p>}
+            {g.lastStay && <p className="text-xs text-stone-400 mt-1">Última visita: {formatDate(g.lastStay)}</p>}
           </button>
         ))}
       </div>

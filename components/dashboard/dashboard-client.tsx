@@ -61,10 +61,10 @@ export function DashboardClient({ initialData }: { initialData: DashboardData | 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+          <h1 className="text-2xl font-bold text-stone-900" style={{ fontFamily: "Nunito, sans-serif" }}>
             Dashboard
           </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
+          <p className="text-stone-500 text-sm mt-0.5">
             {new Date().toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
           </p>
         </div>

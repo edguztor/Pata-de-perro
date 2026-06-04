@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand/logo";
-import { DogMascot } from "@/components/brand/dog-mascot";
+import { Mascot } from "@/components/brand/mascot";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -34,18 +34,18 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 flex flex-col border-r border-slate-800/80 transition-transform duration-200",
-        "bg-gradient-to-b from-[#0d1627] to-[#0a0f1e]",
+        "fixed inset-y-0 left-0 z-40 w-64 flex flex-col border-r border-stone-200 transition-transform duration-200",
+        "bg-gradient-to-b from-[#ece4d5] to-[#f4efe4]",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-slate-800/80 px-5">
+      <div className="flex h-16 items-center justify-between border-b border-stone-200 px-5">
         <Logo />
         {/* Close button — only on mobile */}
         <button
           onClick={onClose}
-          className="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+          className="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
           aria-label="Cerrar menú"
         >
           <X className="h-4 w-4" />
@@ -65,8 +65,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               className={cn(
                 "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-150 animate-slide-in-left",
                 isActive
-                  ? "bg-gradient-to-r from-[#e94560]/15 to-transparent text-white"
-                  : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
+                  ? "bg-gradient-to-r from-[#e94560]/15 to-transparent text-stone-900"
+                  : "text-stone-500 hover:bg-stone-100 hover:text-stone-800"
               )}
             >
               {/* Active accent bar */}
@@ -81,7 +81,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors",
                   isActive
                     ? "bg-[#e94560]/20 text-[#e94560]"
-                    : "text-slate-400 group-hover:text-slate-200"
+                    : "text-stone-500 group-hover:text-stone-700"
                 )}
               >
                 <Icon size={18} />
@@ -93,19 +93,19 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </nav>
 
       {/* Footer — mascot */}
-      <div className="border-t border-slate-800/80 p-4">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#16213e] to-[#0d1627] p-4">
+      <div className="border-t border-stone-200 p-4">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ffffff] to-[#ece4d5] p-4">
           <div className="flex items-center gap-3">
-            <DogMascot className="h-12 w-12 flex-shrink-0 text-amber-400/90 animate-bob" />
+            <Mascot className="h-12 w-12 flex-shrink-0 animate-bob" tintClass="text-stone-700" />
             <div className="leading-tight">
-              <p className="text-xs font-bold text-white">¡Bienvenido!</p>
-              <p className="text-[11px] text-slate-400">Tu hostal, en orden 🐾</p>
+              <p className="text-xs font-bold text-stone-900">¡Bienvenido!</p>
+              <p className="text-[11px] text-stone-500">Tu hostal, en orden 🐾</p>
             </div>
           </div>
           {/* subtle glow */}
           <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-[#e94560]/10 blur-2xl" />
         </div>
-        <p className="mt-3 text-center text-[10px] text-slate-600">v1.0 · Admin Panel</p>
+        <p className="mt-3 text-center text-[10px] text-stone-400">v1.0 · Admin Panel</p>
       </div>
     </aside>
   );
