@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     });
     if (overlap) {
       return NextResponse.json(
-        { error: "La cama ya está reservada en esas fechas", conflict: true, guest: overlap.guest.name },
+        { error: "La cama ya está reservada en esas fechas", conflict: true, guest: overlap.guest.name, checkIn: overlap.checkIn, checkOut: overlap.checkOut },
         { status: 409 }
       );
     }

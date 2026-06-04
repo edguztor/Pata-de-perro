@@ -14,6 +14,7 @@ import {
   endOfWeek,
   isToday,
   isBefore,
+  isAfter,
   startOfDay,
 } from "date-fns";
 import { es } from "date-fns/locale/es";
@@ -22,15 +23,28 @@ import { cn } from "@/lib/utils";
 
 const WEEKDAYS = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"];
 
+export interface BlockedRange {
+  start: Date;
+  end: Date;
+  label?: string;
+}
+
 interface DatePickerProps {
-  value: string; // "yyyy-MM-dd"
+  value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   minDate?: Date;
+  blockedRanges?: BlockedRange[];
   disabled?: boolean;
 }
 
-export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", minDate, disabled }: DatePickerProps) {
+function isInBlockedRange(day: Date, ranges: BlockedRange[]): boolean {
+  return ranges.some(
+    (r) => !isBefore(startOfDay(day), startOfDay(r.start)) && !isAfter(startOfDay(day), startOfDay(r.end))
+  );
+}
+
+export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", minDate, blockedRanges = [], disabled }: DatePickerProps) {
   const selected = value ? new Date(value + "T12:00:00") : null;
   const [viewDate, setViewDate] = useState<Date>(selected ?? new Date());
   const [open, setOpen] = useState(false);
@@ -71,42 +85,33 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
           sideOffset={4}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          {/* Month navigation */}
           <div className="flex items-center justify-between mb-3">
-            <button
-              type="button"
-              onClick={() => setViewDate((d) => subMonths(d, 1))}
-              className="h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
-            >
+            <button type="button" onClick={() => setViewDate((d) => subMonths(d, 1))}
+              className="h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">
               <ChevronLeft className="h-4 w-4" />
             </button>
             <p className="text-sm font-semibold text-white capitalize">
               {format(viewDate, "MMMM yyyy", { locale: es })}
             </p>
-            <button
-              type="button"
-              onClick={() => setViewDate((d) => addMonths(d, 1))}
-              className="h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
-            >
+            <button type="button" onClick={() => setViewDate((d) => addMonths(d, 1))}
+              className="h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
 
-          {/* Day-of-week headers */}
           <div className="grid grid-cols-7 mb-1">
             {WEEKDAYS.map((d) => (
-              <div key={d} className="text-center text-[10px] font-semibold text-slate-500 py-1">
-                {d}
-              </div>
+              <div key={d} className="text-center text-[10px] font-semibold text-slate-500 py-1">{d}</div>
             ))}
           </div>
 
-          {/* Day grid */}
           <div className="grid grid-cols-7 gap-px">
             {days.map((day) => {
               const isSelected = selected ? isSameDay(day, selected) : false;
               const inMonth = isSameMonth(day, viewDate);
-              const isDisabled = minDate ? isBefore(startOfDay(day), startOfDay(minDate)) : false;
+              const isPast = minDate ? isBefore(startOfDay(day), startOfDay(minDate)) : false;
+              const isBlocked = !isPast && isInBlockedRange(day, blockedRanges);
+              const isDisabled = isPast || isBlocked;
               const todayMark = isToday(day);
 
               return (
@@ -115,13 +120,15 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
                   type="button"
                   disabled={isDisabled}
                   onClick={() => handleSelect(day)}
+                  title={isBlocked ? "Fecha ocupada" : undefined}
                   className={cn(
                     "h-8 rounded-lg text-xs font-medium transition-colors flex items-center justify-center",
                     !inMonth && "text-slate-700",
                     inMonth && !isSelected && !todayMark && !isDisabled && "text-slate-300 hover:bg-slate-700 hover:text-white",
-                    todayMark && !isSelected && "bg-slate-700/70 text-white",
+                    todayMark && !isSelected && !isBlocked && "bg-slate-700/70 text-white",
                     isSelected && "bg-[#e94560] text-white font-bold",
-                    isDisabled && "text-slate-700 cursor-not-allowed"
+                    isPast && "text-slate-700 cursor-not-allowed",
+                    isBlocked && inMonth && "bg-rose-950/60 text-rose-400 cursor-not-allowed line-through"
                   )}
                 >
                   {format(day, "d")}
@@ -129,6 +136,16 @@ export function DatePicker({ value, onChange, placeholder = "Selecciona fecha", 
               );
             })}
           </div>
+
+          {blockedRanges.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-slate-700/50 space-y-1">
+              {blockedRanges.map((r, i) => (
+                <p key={i} className="text-[10px] text-rose-400/80 leading-tight">
+                  🔴 {r.label ?? "Ocupado"}: {format(r.start, "dd/MM")} – {format(r.end, "dd/MM/yyyy")}
+                </p>
+              ))}
+            </div>
+          )}
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
