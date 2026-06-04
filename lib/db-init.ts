@@ -119,10 +119,33 @@ async function seedAdminUser() {
   const password = process.env.SEED_ADMIN_PASSWORD ?? "admin123";
   const name = process.env.SEED_ADMIN_NAME ?? "Administrador";
   const passwordHash = await hashPassword(password);
-  await prisma.user.create({
-    data: { username, name, passwordHash, role: "ADMIN" },
+  await prisma.user.upsert({
+    where: { username },
+    create: { username, name, passwordHash, role: "ADMIN" },
+    update: {},
   });
-  console.log(`[db-init] Created admin user "${username}"`);
+  console.log(`[db-init] Admin user "${username}" ready`);
+}
+
+// SEED_USERS: optional JSON array to pre-create staff accounts, e.g.
+// [{"username":"Arturo","password":"...","name":"Arturo","role":"RECEPTIONIST"}]
+async function seedExtraUsers() {
+  const raw = process.env.SEED_USERS;
+  if (!raw) return;
+  try {
+    const list = JSON.parse(raw) as Array<{ username: string; password: string; name: string; role?: string }>;
+    for (const u of list) {
+      const passwordHash = await hashPassword(u.password);
+      await prisma.user.upsert({
+        where: { username: u.username },
+        create: { username: u.username, name: u.name, passwordHash, role: u.role ?? "RECEPTIONIST" },
+        update: {},
+      });
+    }
+    console.log(`[db-init] Seeded ${list.length} extra user(s) from SEED_USERS`);
+  } catch (e) {
+    console.error("[db-init] Invalid SEED_USERS value:", e);
+  }
 }
 
 let initialized = false;
@@ -134,9 +157,7 @@ export async function ensureInitialized() {
   if (count === 0) {
     await seedDatabase();
   }
-  const userCount = await prisma.user.count();
-  if (userCount === 0) {
-    await seedAdminUser();
-  }
+  await seedAdminUser();
+  await seedExtraUsers();
   initialized = true;
 }
